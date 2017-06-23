@@ -12,6 +12,7 @@ import DirectionsTrip from '../components/GoogleMapComponent.jsx';
 import GoogleMapUrlButton from '../components/GoogleMapUrlButton.jsx';
 import FullTripUserSubmitButton from '../components/FullTripUserSubmitButton.jsx';
 import UserStore from '../stores/UserStore.jsx';
+import TripConstants from '../constants/TripConstants';
 import $ from 'jquery';
 // Version B: Delete method showed in front end only, dont update the backend until final click. Beter for performance!
 // add_search event use local search instead of calling backend for updates.!
@@ -69,17 +70,18 @@ class HomePage extends React.Component {
     this.getMapUrl = this.getMapUrl.bind(this)
     this.onAddEventSubmit = this.onAddEventSubmit.bind(this)
   }
-  performSearch() {
-    const dbLocationURI = 'http://127.0.0.1:8000/city_state_search/?city_state=';
-    const _this = this;
-    const valid_input = encodeURIComponent(this.state.searchInputValue);
-    const myUrl = dbLocationURI + valid_input;
 
-    if(this.state.searchInputValue !== '') {
-      console.log(myUrl);
+  performSearch() {
+    // const dbLocationURI = 'http://127.0.0.1:8000/city_state_search/?city_state=';
+    const _this = this;
+    const valid_input = encodeURIComponent(_this.state.searchInputValue);
+    const cityStateSearchUrl = TripConstants.SEARCH_CITY_STATE_URL + valid_input;
+
+    if(_this.state.searchInputValue !== '') {
+      console.log(cityStateSearchUrl);
       $.ajax({
         type: "GET",
-        url: myUrl,
+        url: cityStateSearchUrl,
       }).done(function(res) {
         _this.setState({
           cityStateDataSource : res.city_state,  
@@ -87,6 +89,7 @@ class HomePage extends React.Component {
       });
     };
   }
+
   onUpdateInput(searchInputValue) {
     this.setState({
         searchInputValue,
@@ -94,21 +97,19 @@ class HomePage extends React.Component {
       this.performSearch();
     });
   }
+
   handleDaysOnChange = (event, index, value) => this.setState({ daysValue: event.target.innerText});
 
   onFullTripSubmit = () => {
-    const dbLocationURI = 'http://127.0.0.1:8000/full_trip_search/?';
+    // const dbLocationURI = 'http://127.0.0.1:8000/full_trip_search/?';
     const _this = this;
     const city = this.state.searchInputValue.split(', ')[0];
     const state = this.state.searchInputValue.split(', ')[1];
-    const valid_city_input = encodeURIComponent(city);
-    const valid_state_input = encodeURIComponent(state);
-    const myUrl = dbLocationURI + 'city=' + valid_city_input + '&state='+ valid_state_input
-                +'&n_days='+ this.state.daysValue;
-    if(this.state.searchInputValue !== '') {
+    const fullTripSearchUrl = TripConstants.SEARCH_FULL_TRIP_URL + 'city=' + encodeURIComponent(city) + '&state='+ encodeURIComponent(state) + '&n_days='+ _this.state.daysValue;
+    if(_this.state.searchInputValue !== '') {
       $.ajax({
         type: "GET",
-        url: myUrl,
+        url: fullTripSearchUrl,
       }).done(function(res) {
         _this.setState({
           fullTripDetails : res.full_trip_details,  
@@ -119,25 +120,23 @@ class HomePage extends React.Component {
           poiDict: {},
           searchEventValue: '',
         });
-        // call a func: map fulltrip detail to clone => cloneFullTripDetails = 
       });
     };
   }
 
-  
-
   //may want to reset!
   performDeleteEventId() {
     const { fullTripId, updateEventId, updateTripLocationId } = this.state;
-    const myUrl = 'http://127.0.0.1:8000/update_trip/delete/?full_trip_id=' + fullTripId +
-                        '&event_id=' + updateEventId +
-                        '&trip_location_id='+ updateTripLocationId;
+    // const myUrl = 'http://127.0.0.1:8000/update_trip/delete/?full_trip_id=' + fullTripId +
+    //                     '&event_id=' + updateEventId +
+    //                     '&trip_location_id='+ updateTripLocationId;
+    const updateFullTripDeletePoiUrl = TripConstants.UPDATE_FULL_TRIP_DELETE_POI_URL + fullTripId + '&event_id=' + updateEventId + '&trip_location_id='+ updateTripLocationId;
     const _this = this;
     if(updateEventId !== '') {
-      console.log(myUrl);
+      console.log(updateFullTripDeletePoiUrl);
       $.ajax({
         type: "GET",
-        url: myUrl,
+        url: updateFullTripDeletePoiUrl,
       }).done(function(res) {
         _this.setState({
           fullTripDetails : res.full_trip_details,  
@@ -149,6 +148,7 @@ class HomePage extends React.Component {
       });
     };
   }
+
   onDeleteEvent(updateEventId, updateTripLocationId) {
     this.setState({
         updateEventId,
@@ -177,16 +177,16 @@ class HomePage extends React.Component {
   }
 
   performSuggestEventLst(){
-    
-    const myUrl = 'http://127.0.0.1:8000/update_trip/suggest_search/?full_trip_id=' + this.state.fullTripId +
-                        '&event_id=' + this.state.updateEventId +
-                        '&trip_location_id='+this.state.updateTripLocationId;
+    // const myUrl = 'http://127.0.0.1:8000/update_trip/suggest_search/?full_trip_id=' + this.state.fullTripId +
+    //                     '&event_id=' + this.state.updateEventId +
+    //                     '&trip_location_id='+this.state.updateTripLocationId;
+    const updateFullTripSuggestPoiUrl = TripConstants.UPDATE_FULL_TRIP_SUGGEST_POI_URL + this.state.fullTripId + '&event_id=' + this.state.updateEventId + '&trip_location_id='+this.state.updateTripLocationId;
     const _this = this;
     if(_this.state.updateEventId !== '') {
-      console.log(myUrl);
+      console.log(updateFullTripSuggestPoiUrl);
       $.ajax({
         type: "GET",
-        url: myUrl,
+        url: updateFullTripSuggestPoiUrl,
       }).done(function(res) {
         let suggestEventArr = Object.assign({}, _this.state.suggestEventArr[_this.state.updateEventId], res.suggest_event_array);
         let suggestEvent = suggestEventArr[Math.floor(Math.random()*Object.keys(suggestEventArr).length)];
@@ -310,16 +310,18 @@ class HomePage extends React.Component {
   // and name it GettingStartedGoogleMap
   
   onFullTripUserSubmit = () =>  {
+
     const fullTripUrl = 'http://localhost:8000/create_full_trip/';
     const token = localStorage.getItem('user_token')
     // const headers = {
     //                 'Authorization': 'Token ' + UserStore.token
     //                 }
     const headers = {
-    'Authorization': 'Token ' + localStorage.user_token
+    // 'Authorization': 'Token ' + localStorage.user_token
+    'Authorization': 'Token ' + token
     }
     const _this = this;
-    console.log('headers: ', headers)
+    console.log('headers: ', headers, UserStore.token)
     let data = {
       fullTripId: this.state.fullTripId,
     };
