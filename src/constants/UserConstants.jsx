@@ -1,4 +1,5 @@
-var BASE_URL = 'http://localhost:8000/';
+var BASE_URL = 'http://174.129.85.123/';
+// var BASE_URL = 'http://localhost:8000/';
 
 var UserConstants = {
     BASE_URL: BASE_URL,

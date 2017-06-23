@@ -206,15 +206,14 @@ class HomePage extends React.Component {
   }
 
   onFullTripConfirm(){
-    const suggestConfirmUrl = 'http://127.0.0.1:8000/update_trip/suggest_confirm/';
+    // const suggestConfirmUrl = 'http://127.0.0.1:8000/update_trip/suggest_confirm/';
+    const suggestConfirmUrl = TripConstants.UPDATE_FULL_TRIP_SUGGEST_CONFIRM_URL;
     const _this = this;
-
     let data = {
       updateSuggestEvent: JSON.stringify(this.state.updateSuggestEvent),
       fullTripId: this.state.fullTripId,
       updateTripLocationId: this.state.updateTripLocationId,
     };
-    // data = JSON.stringify(data)
     $.ajax({
       type: 'POST',
       url: suggestConfirmUrl,
@@ -233,21 +232,18 @@ class HomePage extends React.Component {
     .fail(function(jqXhr) {
       console.log('failed to register');
     });
-
   }
 
   performAddEventSearch() {
-    const dbLocationURI = 'http://127.0.0.1:8000/update_trip/add_search/?poi_name=';
+    // const dbLocationURI = 'http://127.0.0.1:8000/update_trip/add_search/?poi_name=';
     const _this = this;
     const validInput = encodeURIComponent(this.state.searchEventValue);
-    const myUrl = dbLocationURI + validInput + 
-                    '&trip_location_id=' + this.state.updateTripLocationId +
-                    '&full_trip_id=' + this.state.fullTripId;
-    if(this.state.searchEventValue !== '') {
-      console.log('add url: ', myUrl);
+    const addPoiSearchUrl = TripConstants.UPDATE_FULL_TRIP_ADD_POI_SEARCH_URL + validInput + '&trip_location_id=' + _this.state.updateTripLocationId + '&full_trip_id=' + _this.state.fullTripId;
+    if(_this.state.searchEventValue !== '') {
+      console.log('add url: ', addPoiSearchUrl);
       $.ajax({
         type: "GET",
-        url: myUrl,
+        url: addPoiSearchUrl,
       }).done(function(res) {
         _this.setState({
           addEventDataSource : res.poi_names,  
@@ -257,6 +253,7 @@ class HomePage extends React.Component {
       });
     };
   }
+
   onAddEventInput(searchEventValue) {
     this.setState({
         searchEventValue,
@@ -281,18 +278,16 @@ class HomePage extends React.Component {
   }
 
   onAddEventSubmit = () => {
-    const dbLocationURI = 'http://127.0.0.1:8000/update_trip/add/?';
+    // const dbLocationURI = 'http://127.0.0.1:8000/update_trip/add/?';
     const _this = this;
     const poiId = this.state.poiDict[this.state.searchEventValue];
     const validPoiName = encodeURIComponent(this.state.searchEventValue);
-    const myUrl = dbLocationURI + 'poi_id=' + poiId + '&poi_name='+ validPoiName
-                +'&full_trip_id='+ this.state.fullTripId +
-                '&trip_location_id='+this.state.updateTripLocationId;
-    console.log(myUrl)
+    const addPoiUrl = TripConstants.UPDATE_FULL_TRIP_ADD_POI_URL + 'poi_id=' + poiId + '&poi_name='+ validPoiName +'&full_trip_id='+ this.state.fullTripId + '&trip_location_id='+this.state.updateTripLocationId;
+    console.log(addPoiUrl)
     if(this.state.searchEventValue !== '') {
       $.ajax({
         type: "GET",
-        url: myUrl,
+        url: addPoiUrl,
       }).done(function(res) {
         _this.setState({
           fullTripDetails : res.full_trip_details,  
@@ -311,7 +306,8 @@ class HomePage extends React.Component {
   
   onFullTripUserSubmit = () =>  {
 
-    const fullTripUrl = 'http://localhost:8000/create_full_trip/';
+    // const fullTripUrl = 'http://localhost:8000/create_full_trip/';
+    const fullTripUrl = TripConstants.CREATE_FULL_TRIP_URL
     const token = localStorage.getItem('user_token')
     // const headers = {
     //                 'Authorization': 'Token ' + UserStore.token
@@ -321,9 +317,9 @@ class HomePage extends React.Component {
     'Authorization': 'Token ' + token
     }
     const _this = this;
-    console.log('headers: ', headers, UserStore.token)
+    console.log('headers: ', headers, token)
     let data = {
-      fullTripId: this.state.fullTripId,
+      fullTripId: _this.state.fullTripId,
     };
     // data = JSON.stringify(data)
     $.ajax({
