@@ -1,5 +1,4 @@
 import React, {PropTypes} from 'react';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
 import MapsMap from 'material-ui/svg-icons/maps/map';
 import RaisedButton from 'material-ui/RaisedButton';
 

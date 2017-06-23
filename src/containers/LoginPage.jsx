@@ -49,7 +49,7 @@ class LoginPage extends React.Component {
                 alert("Error logging in", err)
             })
             .done(function(greeting) {
-              if (greeting != undefined) {
+              if (greeting !== undefined) {
                 console.log('greeting', greeting);
                 _this.context.router.replace('/');
               }

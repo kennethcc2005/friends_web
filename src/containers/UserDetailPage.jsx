@@ -1,6 +1,6 @@
 import React from 'react';
 import Auth from '../services/AuthService.jsx'
-import {Link} from 'react-router';
+// import {Link} from 'react-router';
 import UserActions from '../actions/UserActions.jsx';
 import UserStore from '../stores/UserStore.jsx';
 

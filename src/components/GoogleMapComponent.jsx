@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-import { withGoogleMap, GoogleMap, Marker,DirectionsRenderer } from "react-google-maps";
-import Helmet from "react-helmet";
-
+import { withGoogleMap, GoogleMap, DirectionsRenderer } from "react-google-maps";
 
 export default class FullTripDirectionsTrip extends Component {
 
@@ -46,8 +44,8 @@ export default class FullTripDirectionsTrip extends Component {
 
   getWaypts = function(fullTripDetails, tripLocationIds, updateTripLocationId) {
     let waypts = [];
-    const currentDay = tripLocationIds.findIndex(x => x == updateTripLocationId);
-    const oriIndex = fullTripDetails.findIndex(x => x.day == currentDay);
+    const currentDay = tripLocationIds.findIndex(x => x === updateTripLocationId);
+    const oriIndex = fullTripDetails.findIndex(x => x.day === currentDay);
     const dayAry = fullTripDetails.map(function(a) {return a.day;});
     const destIndex = dayAry.lastIndexOf(currentDay);
     let origin = '';
@@ -74,12 +72,12 @@ export default class FullTripDirectionsTrip extends Component {
       else {
         location = new window.google.maps.LatLng(fullTripDetails[i].coord_lat, fullTripDetails[i].coord_long);
       }
-      if(i == oriIndex) {
+      if(i === oriIndex) {
         origin = location;
         originUrl = '&origin='+fullTripDetails[i].coord_lat+','+fullTripDetails[i].coord_long ; 
         // console.log(fullTripDetails[i], 'ori')
       }
-      else if(i ==destIndex) {
+      else if(i === destIndex) {
         destination = location;
         destUrl = '&destination='+ fullTripDetails[i].coord_lat+','+fullTripDetails[i].coord_long; 
         // console.log(fullTripDetails[i],'dest')

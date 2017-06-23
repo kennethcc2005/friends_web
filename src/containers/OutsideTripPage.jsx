@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, CardTitle, CardActions, CardText, CardMedia } from 'material-ui/Card';
 import SearchInputField from '../components/SearchInputField.jsx';
-import MenuItemDays from '../components/MenuItemDays.jsx';
 import MenuItemDirections from '../components/MenuItemDirections.jsx';
 import FullTripSearchButton from '../components/FullTripSearchButton.jsx';
 import FullTripList from '../components/FullTripList.jsx';
@@ -9,13 +8,11 @@ import FullTripAddEventButton from '../components/FullTripAddEventButton.jsx';
 import FullTripResetButton from '../components/FullTripResetButton.jsx';
 import FullTripConfirmButton from '../components/FullTripConfirmButton.jsx';
 import DirectionsTrip from '../components/GoogleMapComponent.jsx';
-import FullDirectionsTrip from '../components/GoogleMapFullTripComponent.jsx';
 import GoogleMapUrlButton from '../components/GoogleMapUrlButton.jsx';
 import FullTripUserSubmitButton from '../components/FullTripUserSubmitButton.jsx';
 import UserStore from '../stores/UserStore.jsx';
 
 import TripConstants from '../constants/TripConstants.jsx';
-import {GridList, GridTile} from 'material-ui/GridList';
 import OutsideTripGrid from '../components/OutsideTripGrid.jsx';
 import $ from 'jquery';
 
@@ -371,7 +368,7 @@ class OutsideTripPage extends React.Component {
   searchAPILocation(){
     const _this = this;
     $.getJSON('https://api.ipify.org?format=json', function(data){
-      if (localStorage.getItem('ip') != data.ip) {
+      if (localStorage.getItem('ip') !== data.ip) {
         const ipLocationURL = TripConstants.IP_LOCATION_URL + data.ip
         console.log(data.ip, ipLocationURL);
         $.ajax({
@@ -425,7 +422,7 @@ class OutsideTripPage extends React.Component {
             <div className="col-md-8 col-md-offset-2">
               <div className="col-md-5">
                 <SearchInputField 
-                  name ='searchCityState'
+                  name='searchCityState'
                   searchText={this.state.searchInputValue}
                   floatingLabelText='Current Location' 
                   dataSource={this.state.cityStateDataSource} 
@@ -484,7 +481,7 @@ class OutsideTripPage extends React.Component {
                 <div className="col-md-5 col-md-offset-1">
                   {this.state.fullTripDetails.length>0 && 
                     <SearchInputField
-                      name = 'searchAddEvent'
+                      name='searchAddEvent'
                       searchText={this.state.searchEventValue}
                       hintText='Add New Event'
                       inputStyle={{ textAlign: 'center' }}

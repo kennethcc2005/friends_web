@@ -1,10 +1,8 @@
-import React, {Component,PropTypes} from 'react';
+import React from 'react';
 // import MobileTearSheet from '../../../MobileTearSheet';
 import {List, ListItem, makeSelectable} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
-import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
-import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+import {grey400} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import IconMenu from 'material-ui/IconMenu';
@@ -64,7 +62,7 @@ export default class FullTripList extends React.Component {
         var fullDetails = [];
         
         for (var j=0; j<this.props.fullTripDetails.length; j++) {
-            if (this.props.fullTripDetails[j].day == i){
+            if (this.props.fullTripDetails[j].day === i){
                 let id =  this.props.fullTripDetails[j].id; 
                 let keyId = '';
                 let primaryTextName = '';

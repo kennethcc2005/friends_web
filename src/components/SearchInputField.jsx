@@ -6,16 +6,16 @@ import {debounce} from 'throttle-debounce';
 const SearchInputField = ({name,searchText, floatingLabelText, dataSource, onUpdateInput, hintText, inputStyle}) => {
   return (
         <AutoComplete
-          name                ={name}
-          searchText          ={searchText}
-          floatingLabelText   ={floatingLabelText}
-          filter              ={AutoComplete.noFilter}
-          openOnFocus         ={true}
-          dataSource          ={dataSource}
-          onUpdateInput       ={debounce(600,onUpdateInput)} 
-          className           ="searchInputField"
-          inputStyle          ={inputStyle}
-          placeholder         ={hintText}
+          name={name}
+          searchText={searchText}
+          floatingLabelText={floatingLabelText}
+          filter={AutoComplete.noFilter}
+          openOnFocus={true}
+          dataSource={dataSource}
+          onUpdateInput={debounce(600,onUpdateInput)} 
+          className="searchInputField"
+          inputStyle={inputStyle}
+          placeholder={hintText}
         />
       )
 }
