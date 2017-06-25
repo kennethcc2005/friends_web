@@ -3,92 +3,43 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 
-const styles = {
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  gridList: {
-    overflowY: 'auto',
-  },
-};
+export default class OutisdeTripGrid extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      slideIndex: 0,
+    };
+  }
 
-const tilesData = [
-  {
-    id: 1,
-    img: 'http://www.material-ui.com/images/grid-list/00-52-29-429_640.jpg',
-    title: 'Breakfast',
-    author: 'jill111',
-    featured: true,
-  },
-  {
-    id: 2,
-    img: 'http://www.material-ui.com/images/grid-list/morning-819362_640.jpg',
-    title: 'Tasty burger',
-    author: 'pashminu',
-  },
-  {
-    id: 3,
-    img: 'images/grid-list/camera-813814_640.jpg',
-    title: 'Camera',
-    author: 'Danson67',
-  },
-  
-  {
-    id: 4,
-    img: 'images/grid-list/hats-829509_640.jpg',
-    title: 'Hats',
-    author: 'Hans',
-  },
-  {
-    id: 5,
-    img: 'images/grid-list/honey-823614_640.jpg',
-    title: 'Honey',
-    author: 'fancycravel',
-  },
-  {
-    id: 6,
-    img: 'images/grid-list/morning-819362_640.jpg',
-    title: 'Morning',
-    author: 'fancycrave1',
-    featured: true,
-  },
-];
-
-/**
- * This example demonstrates "featured" tiles, using the `rows` and `cols` props to adjust the size of the tile.
- * The tiles have a customised title, positioned at the top and with a custom gradient `titleBackground`.
- */
-
-const OutisdeTripGrid = ({getOutsideTripTileTapName}) => (
-  <div style={styles.root}>
-    <GridList
-      cols={2}
-      cellHeight={200}
-      padding={1}
-      style={styles.gridList}
-    >
-      {tilesData.map((tile) => (
+  render() {
+    let tilesData = [];
+    const numTiles = this.props.outsideTripRouteIdList.length;
+    const tileDetails = this.props.handleOutsideTripDetails;
+    for (var i=0; i<numTiles; i++) {
+      tilesData.push(
         <GridTile
-          key={tile.id}
-          title={tile.title}
+          key={this.props.outsideTripRouteIdList[i].id}
+          title={"Explore Around "+this.props.handleOutsideTripDetails[i][0].name}
           titlePosition="top"
           titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
-          cols={tile.featured ? 2 : 1}
-          rows={tile.featured ? 2 : 1}
-          onTouchTap={(e) => getOutsideTripTileTapName(tile.id)} 
+          cols={i===0 || i===numTiles-1 ? 2 : 1}
+          rows={i===0 || i===numTiles-1 ? 2 : 1}
+          onTouchTap={(e) => this.props.getOutsideTripTileTapName(this.props.outsideTripRouteIdList[i].id)} 
         >
-          <img src={tile.img} />
+          <img src={this.props.handleOutsideTripDetails[i][0].img_url} />
         </GridTile>
-      ))}
-    </GridList>
-  </div>
-);
-
-OutisdeTripGrid.propTypes = {
-  getOutsideTripTileTapName: PropTypes.func.isRequired,
-};
-
-export default OutisdeTripGrid;
-
+      );
+    };
+    return (
+      <div>
+        <GridList
+          cols={2}
+          cellHeight={200}
+          padding={1}
+        >
+          {tilesData}
+        </GridList>
+      </div>
+    );
+  }
+}

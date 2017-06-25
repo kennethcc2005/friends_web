@@ -61,9 +61,11 @@ class OutsideTripPage extends React.Component {
       updateSuggestEvent: {},
       currentMapUrl: '',
       newFullTrip: '',
-
-
+      outsideTripDetails: [],
+      outsideTripId: '',
+      outsideTripRouteIdList: []
     };
+
     this.getOutsideTripTileTapName = this.getOutsideTripTileTapName.bind(this)
     this.handleDirectionsOnChange = this.handleDirectionsOnChange.bind(this)
     this.onOutsideTripSubmit = this.onOutsideTripSubmit.bind(this)
@@ -87,16 +89,16 @@ class OutsideTripPage extends React.Component {
 
   // For both full trip and outside trip
   performSearch() {
-    const dbLocationURI = 'http://127.0.0.1:8000/city_state_search/?city_state=';
+    // const dbLocationURI = 'http://127.0.0.1:8000/city_state_search/?city_state=';
     const _this = this;
-    const valid_input = encodeURIComponent(this.state.searchInputValue);
-    const myUrl = dbLocationURI + valid_input;
+    const valid_input = encodeURIComponent(_this.state.searchInputValue);
+    const cityStateSearchUrl = TripConstants.SEARCH_CITY_STATE_URL + valid_input;
 
-    if(this.state.searchInputValue !== '') {
-      console.log(myUrl);
+    if(_this.state.searchInputValue !== '') {
+      console.log(cityStateSearchUrl);
       $.ajax({
         type: "GET",
-        url: myUrl,
+        url: cityStateSearchUrl,
       }).done(function(res) {
         _this.setState({
           cityStateDataSource : res.city_state,  
@@ -116,38 +118,40 @@ class OutsideTripPage extends React.Component {
 
   //outside trip only 
   onOutsideTripSubmit = () => {
-    const dbLocationURI = 'http://127.0.0.1:8000/outside_trip_search/?';
+    // const dbLocationURI = 'http://127.0.0.1:8000/outside_trip_search/?';
     const _this = this;
     const city = this.state.searchInputValue.split(', ')[0];
     const state = this.state.searchInputValue.split(', ')[1];
     const valid_city_input = encodeURIComponent(city);
     const valid_state_input = encodeURIComponent(state);
-    const myUrl = dbLocationURI + 'city=' + valid_city_input + '&state='+ valid_state_input
+    const outsideTripSearchUrl = TripConstants.SEARCH_OUTSIDE_TRIP_URL + 'city=' + valid_city_input + '&state='+ valid_state_input
                 +'&direction='+ this.state.directionValue;
-    console.log('outside trip: ',myUrl)
+    console.log('outside trip: ',outsideTripSearchUrl)
     if(this.state.searchInputValue !== '') {
       $.ajax({
         type: "GET",
-        url: myUrl,
+        url: outsideTripSearchUrl,
       }).done(function(res) {
-        console.log('outside result: ', res)
+        console.log('done search ???,', res)
         _this.setState({
-          fullTripDetails : res.full_trip_details,  
-          fullTripId: res.full_trip_id,
-          tripLocationIds: res.trip_location_ids,
-          updateTripLocationId: res.trip_location_ids[0],
+          outsideTripDetails: res.outside_trip_details,  
+          outsideTripId: res.outside_trip_id,
+          outsideTripRouteIdList: res.outside_route_ids_list,
+          // outsideEventIdList: res.outside_event_id_list,
+          // updateTripLocationId: res.trip_location_ids[0],
           addEventDataSource: [],
           poiDict: {},
           searchEventValue: '',
         });
-        // call a func: map fulltrip detail to clone => cloneFullTripDetails = 
+        console.log('zz,', _this.state.outsideTripDetails, _this.state.outsideTripRouteIdList)
       });
     };
   }
 
-  
+  //outside trip only!
 
   //may want to reset!
+  // needs to update api view!
   performDeleteEventId() {
     const { fullTripId, updateEventId, updateTripLocationId } = this.state;
     const myUrl = 'http://127.0.0.1:8000/update_trip/delete/?full_trip_id=' + fullTripId +
@@ -170,6 +174,7 @@ class OutsideTripPage extends React.Component {
       });
     };
   }
+
   onDeleteEvent(updateEventId, updateTripLocationId) {
     this.setState({
         updateEventId,
@@ -197,8 +202,8 @@ class OutsideTripPage extends React.Component {
     }
   }
 
+  // needs to update outside trip with api views
   performSuggestEventLst(){
-    
     const myUrl = 'http://127.0.0.1:8000/update_trip/suggest_search/?full_trip_id=' + this.state.fullTripId +
                         '&event_id=' + this.state.updateEventId +
                         '&trip_location_id='+this.state.updateTripLocationId;
@@ -257,6 +262,7 @@ class OutsideTripPage extends React.Component {
 
   }
 
+  // needs to update for outside trip
   performAddEventSearch() {
     const dbLocationURI = 'http://127.0.0.1:8000/update_trip/add_search/?poi_name=';
     const _this = this;
@@ -278,6 +284,7 @@ class OutsideTripPage extends React.Component {
       });
     };
   }
+
   onAddEventInput(searchEventValue) {
     this.setState({
         searchEventValue,
@@ -301,6 +308,7 @@ class OutsideTripPage extends React.Component {
     })
   }
 
+  // needs to update for ooutside trip
   onAddEventSubmit = () => {
     const dbLocationURI = 'http://127.0.0.1:8000/update_trip/add/?';
     const _this = this;
@@ -330,6 +338,7 @@ class OutsideTripPage extends React.Component {
   // Wrap all `react-google-maps` components with `withGoogleMap` HOC
   // and name it GettingStartedGoogleMap
   
+  // for outside trip!
   onFullTripUserSubmit = () =>  {
     const fullTripUrl = 'http://localhost:8000/create_full_trip/';
     const token = localStorage.getItem('user_token')
@@ -365,6 +374,7 @@ class OutsideTripPage extends React.Component {
 
   }
 
+  //ready for outside trip!
   searchAPILocation(){
     const _this = this;
     $.getJSON('https://api.ipify.org?format=json', function(data){
@@ -395,6 +405,15 @@ class OutsideTripPage extends React.Component {
 
   handleDirectionsOnChange = (event, index, value) => this.setState({ directionValue: value});
 
+  getOutsideTripTileTapName(updateOutsideTripId) {
+    this.setState({
+        updateOutsideTripId: updateOutsideTripId,
+        addEventDataSource: [],
+        searchEventValue: '',
+    });
+    console.log(updateOutsideTripId, 'aha')
+  }
+
   componentWillMount(){
     this.searchAPILocation();  
     const tripDirections = ['N','W','E','S'];
@@ -403,15 +422,6 @@ class OutsideTripPage extends React.Component {
       searchInputValue: this.state.ipCity + ', ' + this.state.ipState,
       directionValue: tripDirections[randomDirectionIdx]
     }) 
-  }
-
-  getOutsideTripTileTapName(updateOutsideTripId) {
-    this.setState({
-        updateOutsideTripId: updateOutsideTripId,
-        addEventDataSource: [],
-        searchEventValue: '',
-    });
-    console.log(updateOutsideTripId, 'aha')
   }
 
   render() { 
@@ -431,22 +441,26 @@ class OutsideTripPage extends React.Component {
 
               </div>
               <div className="col-md-5">
-                <MenuItemDirections directionValue={this.state.directionValue} handleDirectionsOnChange={this.handleDirectionsOnChange}/>
-
+                <MenuItemDirections 
+                  directionValue={this.state.directionValue} 
+                  handleDirectionsOnChange={this.handleDirectionsOnChange}/>
               </div>
               <div className="col-md-2">
                 <FullTripSearchButton onFullTripSubmit={this.onOutsideTripSubmit}/>
               </div>
               <div className="col-md-12">
-                <OutsideTripGrid getOutsideTripTileTapName={this.getOutsideTripTileTapName} />
+                {console.log('z2',this.state.outsideTripDetails)}
+                {this.state.outsideTripDetails.length>0 && <OutsideTripGrid 
+                  getOutsideTripTileTapName={this.getOutsideTripTileTapName} 
+                  handleOutsideTripDetails={this.state.outsideTripDetails}
+                  handleOutsideTripId={this.state.outsideTripId} 
+                  handleOutsideRouteIdList={this.state.outsideTripRouteIdList} /> }
               </div>
             </div>
 
           </CardActions>
         </div>
         <br />
-
-
 
 
 
