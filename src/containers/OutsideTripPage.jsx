@@ -72,6 +72,7 @@ class OutsideTripPage extends React.Component {
     this.getOutsideTripTileTapName = this.getOutsideTripTileTapName.bind(this)
     this.handleDirectionsOnChange = this.handleDirectionsOnChange.bind(this)
     this.onOutsideTripSubmit = this.onOutsideTripSubmit.bind(this)
+    this.toOutsideTrip = this.toOutsideTrip.bind(this)
 
     this.performSearch = this.performSearch.bind(this)
     this.onUpdateInput = this.onUpdateInput.bind(this)
@@ -412,6 +413,11 @@ class OutsideTripPage extends React.Component {
         addEventDataSource: [],
         searchEventValue: '',
     });
+    this.messagesEnd.scrollIntoView()
+  }
+
+  toOutsideTrip() {
+    this.messagesBegin.scrollIntoView()
   }
 
   componentWillMount(){
@@ -430,7 +436,7 @@ class OutsideTripPage extends React.Component {
         <CardTitle title="Travel with Friends!" subtitle="Explore fun places around your area." />
         <div className="col-md-12">
           <CardActions>
-            <div className="col-md-8 col-md-offset-2">
+            <div className="col-md-8 col-md-offset-2" ref={(el) => {this.messagesBegin = el;}}>
               <div className="col-md-5">
                 <SearchInputField 
                   name='searchCityState'
@@ -449,15 +455,16 @@ class OutsideTripPage extends React.Component {
               <div className="col-md-2">
                 <FullTripSearchButton onFullTripSubmit={this.onOutsideTripSubmit}/>
               </div>
-              <div className="col-md-12">
-                {this.state.outsideTripDetails.length>0 && <OutsideTripGrid 
+              <div className="col-md-12" >
+                {console.log(this.state.outsideTripDetails)}
+                {this.state.outsideTripDetails !== undefined && <OutsideTripGrid 
                   getOutsideTripTileTapName={this.getOutsideTripTileTapName} 
                   handleOutsideTripDetails={this.state.outsideTripDetails}
                   handleOutsideTripId={this.state.outsideTripId} 
                   handleOutsideTripRouteIdList={this.state.outsideTripRouteIdList} /> }
               </div>
 
-              <div className="col-md-12 ">
+              <div className="col-md-12" ref={(el) => {this.messagesEnd = el;}}>
                 {this.state.updateOutsideRouteIdx !== '' && 
                   <OutsideTripList 
                     onDeleteEvent={this.onDeleteEvent} 
@@ -466,6 +473,7 @@ class OutsideTripPage extends React.Component {
                     outsideRouteDetails={this.state.outsideTripDetails[this.state.updateOutsideRouteIdx]} 
                     outsideRouteTitle={this.state.updateOutsideRouteTitle} 
                     getTapName={this.getTapName} 
+                    toOutsideTrip={this.toOutsideTrip}
                     />}
               </div>
 
