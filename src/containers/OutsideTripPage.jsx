@@ -14,6 +14,8 @@ import UserStore from '../stores/UserStore.jsx';
 
 import TripConstants from '../constants/TripConstants.jsx';
 import OutsideTripGrid from '../components/OutsideTripGrid.jsx';
+import OutsideTripList from '../components/OutsideTripList.jsx';
+
 import $ from 'jquery';
 
 // Version B: Delete method showed in front end only, dont update the backend until final click. Beter for performance!
@@ -41,7 +43,8 @@ class OutsideTripPage extends React.Component {
       ipState: localStorage.ip_state,
       ip: localStorage.ip,
       directionValue: '',
-      updateOutsideTripId: '',
+      updateOutsideRouteIdx: '',
+      updateOutsideRouteTitle: '',
 
       place: "",
       days: "",
@@ -143,7 +146,6 @@ class OutsideTripPage extends React.Component {
           poiDict: {},
           searchEventValue: '',
         });
-        console.log('zz,', _this.state.outsideTripDetails, _this.state.outsideTripRouteIdList)
       });
     };
   }
@@ -204,15 +206,13 @@ class OutsideTripPage extends React.Component {
 
   // needs to update outside trip with api views
   performSuggestEventLst(){
-    const myUrl = 'http://127.0.0.1:8000/update_trip/suggest_search/?full_trip_id=' + this.state.fullTripId +
-                        '&event_id=' + this.state.updateEventId +
-                        '&trip_location_id='+this.state.updateTripLocationId;
+    const updateFullTripSuggestPoiUrl = TripConstants.UPDATE_FULL_TRIP_SUGGEST_POI_URL + this.state.fullTripId + '&event_id=' + this.state.updateEventId + '&trip_location_id='+this.state.updateTripLocationId;
     const _this = this;
     if(_this.state.updateEventId !== '') {
-      console.log(myUrl);
+      console.log(updateFullTripSuggestPoiUrl);
       $.ajax({
         type: "GET",
-        url: myUrl,
+        url: updateFullTripSuggestPoiUrl,
       }).done(function(res) {
         let suggestEventArr = Object.assign({}, _this.state.suggestEventArr[_this.state.updateEventId], res.suggest_event_array);
         let suggestEvent = suggestEventArr[Math.floor(Math.random()*Object.keys(suggestEventArr).length)];
@@ -405,13 +405,13 @@ class OutsideTripPage extends React.Component {
 
   handleDirectionsOnChange = (event, index, value) => this.setState({ directionValue: value});
 
-  getOutsideTripTileTapName(updateOutsideTripId) {
+  getOutsideTripTileTapName(updateOutsideRouteIdx, updateOutsideRouteTitle) {
     this.setState({
-        updateOutsideTripId: updateOutsideTripId,
+        updateOutsideRouteIdx: updateOutsideRouteIdx,
+        updateOutsideRouteTitle: updateOutsideRouteTitle,
         addEventDataSource: [],
         searchEventValue: '',
     });
-    console.log(updateOutsideTripId, 'aha')
   }
 
   componentWillMount(){
@@ -427,6 +427,7 @@ class OutsideTripPage extends React.Component {
   render() { 
     return (
       <Card className="container" >
+        <CardTitle title="Travel with Friends!" subtitle="Explore fun places around your area." />
         <div className="col-md-12">
           <CardActions>
             <div className="col-md-8 col-md-offset-2">
@@ -449,13 +450,25 @@ class OutsideTripPage extends React.Component {
                 <FullTripSearchButton onFullTripSubmit={this.onOutsideTripSubmit}/>
               </div>
               <div className="col-md-12">
-                {console.log('z2',this.state.outsideTripDetails)}
                 {this.state.outsideTripDetails.length>0 && <OutsideTripGrid 
                   getOutsideTripTileTapName={this.getOutsideTripTileTapName} 
                   handleOutsideTripDetails={this.state.outsideTripDetails}
                   handleOutsideTripId={this.state.outsideTripId} 
-                  handleOutsideRouteIdList={this.state.outsideTripRouteIdList} /> }
+                  handleOutsideTripRouteIdList={this.state.outsideTripRouteIdList} /> }
               </div>
+
+              <div className="col-md-12 ">
+                {this.state.updateOutsideRouteIdx !== '' && 
+                  <OutsideTripList 
+                    onDeleteEvent={this.onDeleteEvent} 
+                    onSuggestEvent={this.onSuggestEvent}
+                    updateSuggestEvent={this.state.updateSuggestEvent}
+                    outsideRouteDetails={this.state.outsideTripDetails[this.state.updateOutsideRouteIdx]} 
+                    outsideRouteTitle={this.state.updateOutsideRouteTitle} 
+                    getTapName={this.getTapName} 
+                    />}
+              </div>
+
             </div>
 
           </CardActions>
@@ -467,30 +480,11 @@ class OutsideTripPage extends React.Component {
 
         <div className="col-md-12">
           <br/>
-          <CardTitle title="Travel with Friends!" subtitle="Explore fun places around your area." />
-          <CardText>
-            Pick the city and the direction to explore.  You will find great funs.
-          </CardText>
-
-          <CardMedia
-            overlay={<CardTitle title="Chicago is Fun" subtitle="Here is the picture" />}
-          >
-            <img src="images/nature-600-337.jpg" alt="" />
-          </CardMedia>
+          
 
           <CardActions>
             <div className="col-md-8 col-md-offset-2">
-              <div className="col-md-12 ">
-                {this.state.fullTripDetails.length>0 && 
-                  <FullTripList 
-                    onDeleteEvent={this.onDeleteEvent} 
-                    onSuggestEvent={this.onSuggestEvent}
-                    updateSuggestEvent={this.state.updateSuggestEvent}
-                    fullTripDetails={this.state.fullTripDetails} 
-                    tripLocationIds={this.state.tripLocationIds}
-                    getTapName={this.getTapName} 
-                    />}
-              </div>
+              
               <div className="col-md-10 col-md-offset-2">
                 <div className="col-md-5 col-md-offset-1">
                   {this.state.fullTripDetails.length>0 && 
@@ -525,7 +519,6 @@ class OutsideTripPage extends React.Component {
                                                                               tripLocationIds={this.state.tripLocationIds} 
                                                                               getMapUrl={this.getMapUrl} />}
                 </div>
-
                 <br />
                 <div className="col-md-6">
                   {this.state.currentMapUrl.length >0 && <GoogleMapUrlButton googleMapUrl={this.state.currentMapUrl} />}
