@@ -38,11 +38,11 @@ export default class FullTripList extends React.Component {
         <MoreVertIcon color={grey400} />
       </IconButton>
     );
-    const rightIconMenu =(poiId,tripLocationId) => {
+    const rightIconMenu =(poiId,poiName,tripLocationId) => {
         return (
           <IconMenu iconButtonElement={iconButtonElement}>
-            <MenuItem onClick={() => this.props.onSuggestEvent(poiId, tripLocationId)}>Resuggest</MenuItem>
-            <MenuItem onClick={() => this.props.onDeleteEvent(poiId, tripLocationId)}>Delete</MenuItem>
+            <MenuItem onClick={() => this.props.onSuggestEvent(poiId, poiName, tripLocationId)}>Resuggest</MenuItem>
+            <MenuItem onClick={() => this.props.onDeleteEvent(poiId, poiName, tripLocationId)}>Delete</MenuItem>
           </IconMenu>
         )
     };
@@ -91,7 +91,7 @@ export default class FullTripList extends React.Component {
                             </p>  
                         }
                         secondaryTextLines={2}
-                        rightIconButton={rightIconMenu(this.props.fullTripDetails[j].id, this.props.tripLocationIds[i])}
+                        rightIconButton={rightIconMenu(this.props.fullTripDetails[j].id, this.props.fullTripDetails[j].name, this.props.tripLocationIds[i])}
                         leftAvatar={<Avatar src={avatarUrl} />} />
                 );
                 fullWrap[i] = fullDetails;

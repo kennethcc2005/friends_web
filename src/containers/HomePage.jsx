@@ -8,17 +8,18 @@ import FullTripAddEventButton from '../components/FullTripAddEventButton.jsx';
 import FullTripResetButton from '../components/FullTripResetButton.jsx';
 import FullTripConfirmButton from '../components/FullTripConfirmButton.jsx';
 import DirectionsTrip from '../components/GoogleMapComponent.jsx';
+import ReactMaterialUiNotifications from 'react-materialui-notifications/lib/ReactMaterialUiNotifications'
 // import FullDirectionsTrip from '../components/GoogleMapFullTripComponent.jsx';
 import GoogleMapUrlButton from '../components/GoogleMapUrlButton.jsx';
 import FullTripUserSubmitButton from '../components/FullTripUserSubmitButton.jsx';
 import UserStore from '../stores/UserStore.jsx';
 import TripConstants from '../constants/TripConstants';
 import $ from 'jquery';
+
 // Version B: Delete method showed in front end only, dont update the backend until final click. Beter for performance!
 // add_search event use local search instead of calling backend for updates.!
 // alot to updates...>__<
 // Version C: update backend for the add event order or use front end to do so
-
 
 // Bug to be fixed: full trip list disappear when prev state with trip_days >1, tab on day 2 or larger
 // and changes trip_days lower to 1.
@@ -48,12 +49,16 @@ class HomePage extends React.Component {
       tripLocationIds: [],
       cloneFullTripDetails: [],
       updateEventId: '',
+      updateEventName: '',
       updateTripLocationId: '',
       suggestEventArr: {},
       updateSuggestEvent: {},
       currentMapUrl: '',
       newFullTrip: '',
+      errorsCityState: {},
+      errors: {},
     };
+
     this.performSearch = this.performSearch.bind(this)
     this.onUpdateInput = this.onUpdateInput.bind(this)
     this.handleDaysOnChange = this.handleDaysOnChange.bind(this)
@@ -103,9 +108,10 @@ class HomePage extends React.Component {
   onFullTripSubmit = () => {
     // const dbLocationURI = 'http://127.0.0.1:8000/full_trip_search/?';
     const _this = this;
-    const city = this.state.searchInputValue.split(', ')[0];
-    const state = this.state.searchInputValue.split(', ')[1];
+    const city = this.state.searchInputValue.split(',')[0];
+    const state = this.state.searchInputValue.split(',')[1];
     const fullTripSearchUrl = TripConstants.SEARCH_FULL_TRIP_URL + 'city=' + encodeURIComponent(city) + '&state='+ encodeURIComponent(state) + '&n_days='+ _this.state.daysValue;
+
     if(_this.state.searchInputValue !== '') {
       $.ajax({
         type: "GET",
@@ -119,7 +125,12 @@ class HomePage extends React.Component {
           addEventDataSource: [],
           poiDict: {},
           searchEventValue: '',
+          errorsCityState: {},
         });
+      }).fail(function(res, status, errorThrown){
+        _this.setState({
+            errorsCityState: JSON.parse(res.responseText)
+          });
       });
     };
   }
@@ -156,25 +167,29 @@ class HomePage extends React.Component {
       },this.performDeleteEventId);
   }
 
-  onSuggestEvent(updateEventId, updateTripLocationId) {
-    console.log('suggest event!')
+  onSuggestEvent(updateEventId, updateEventName, updateTripLocationId) {
     if (this.state.suggestEventArr.hasOwnProperty(updateEventId)) {
       const suggestEventArrLength = Object.keys(this.state.suggestEventArr).length
       const randomSuggestEventArrIdx = Math.floor(Math.random()*suggestEventArrLength)
       const suggestEvent = this.state.suggestEventArr[randomSuggestEventArrIdx];
       const updateSuggestEvent = Object.assign({}, this.state.updateSuggestEvent, {[this.state.updateEventId]:suggestEvent});
+      const errors = {};
       this.setState({
         updateEventId,
         // updateTripLocationId: updateTripLocationId,
+        updateEventName,
         updateSuggestEvent,
+        errors,
       }); 
     } else {
       this.setState({
         updateEventId,
+        updateEventName,
         // updateTripLocationId
       }, this.performSuggestEventLst);
     }
   }
+
 
   performSuggestEventLst(){
     // const myUrl = 'http://127.0.0.1:8000/update_trip/suggest_search/?full_trip_id=' + this.state.fullTripId +
@@ -182,8 +197,8 @@ class HomePage extends React.Component {
     //                     '&trip_location_id='+this.state.updateTripLocationId;
     const updateFullTripSuggestPoiUrl = TripConstants.UPDATE_FULL_TRIP_SUGGEST_POI_URL + this.state.fullTripId + '&event_id=' + this.state.updateEventId + '&trip_location_id='+this.state.updateTripLocationId;
     const _this = this;
+    console.log('suggest poi url: ', updateFullTripSuggestPoiUrl)
     if(_this.state.updateEventId !== '') {
-      console.log(updateFullTripSuggestPoiUrl);
       $.ajax({
         type: "GET",
         url: updateFullTripSuggestPoiUrl,
@@ -194,6 +209,15 @@ class HomePage extends React.Component {
         _this.setState({
           suggestEventArr: suggestEventArr,
           updateSuggestEvent: updateSuggestEvent,
+        });
+      }).fail(function(res, status, errorThrown){
+        const errors = JSON.parse(res.responseText);
+        ReactMaterialUiNotifications.showNotification({
+          title: _this.state.updateEventName,
+          additionalText: errors.error_no_suggestion,
+        });
+        _this.setState({
+          errors: errors
         });
       });
     };
@@ -305,7 +329,6 @@ class HomePage extends React.Component {
   // and name it GettingStartedGoogleMap
   
   onFullTripUserSubmit = () =>  {
-
     // const fullTripUrl = 'http://localhost:8000/create_full_trip/';
     const fullTripUrl = TripConstants.CREATE_FULL_TRIP_URL
     const token = localStorage.getItem('user_token')
@@ -344,85 +367,101 @@ class HomePage extends React.Component {
 
   render() { 
     return (
-      <Card className="container" >
-        <CardTitle title="Travel with Friends!" subtitle="This is the home page." />
-        <CardActions>
-          
-          <div className="col-md-8 col-md-offset-2">
-            <div className="col-md-5">
-              <SearchInputField 
-                name='searchCityState'
-                searchText={this.state.searchInputValue}
-                floatingLabelText='Location' 
-                dataSource={this.state.cityStateDataSource} 
-                onUpdateInput={this.onUpdateInput} />
-            </div>
-            <div className="col-md-5">
-              <MenuItemDays daysValue={this.state.daysValue} handleDaysOnChange={this.handleDaysOnChange}/>
-            </div>
-            <div className="col-md-2">
-              <FullTripSearchButton onFullTripSubmit={this.onFullTripSubmit}/>
-            </div>
-            <br/>
-            <div className="col-md-12 ">
-              {this.state.fullTripDetails.length>0 && 
-                <FullTripList 
-                  onDeleteEvent={this.onDeleteEvent} 
-                  onSuggestEvent={this.onSuggestEvent}
-                  updateSuggestEvent={this.state.updateSuggestEvent}
-                  fullTripDetails={this.state.fullTripDetails} 
-                  tripLocationIds={this.state.tripLocationIds}
-                  getTapName={this.getTapName} 
-                  />}
-            </div>
-            <div className="col-md-10 col-md-offset-2">
-              <div className="col-md-5 col-md-offset-1">
-                {this.state.fullTripDetails.length>0 && 
-                  <SearchInputField
-                    name='searchAddEvent'
-                    searchText={this.state.searchEventValue}
-                    hintText='Add New Event'
-                    inputStyle={{ textAlign: 'center' }}
-                    dataSource={this.state.addEventDataSource} 
-                    onUpdateInput={this.onAddEventInput} />}
+      <div>
+        <ReactMaterialUiNotifications
+            desktop={true}
+            transitionName={{
+              leave: 'dummy',
+              leaveActive: 'fadeOut',
+              appear: 'dummy',
+              appearActive: 'zoomInUp'
+            }}
+            transitionAppear={true}
+            transitionLeave={true}
+            autoHide={3000}
+          />
+
+        <Card className="container" >
+          <CardTitle title="Travel with Friends!" subtitle="This is the home page." />
+          <CardActions>
+            
+            <div className="col-md-8 col-md-offset-2">
+              <div className="col-md-5">
+                <SearchInputField 
+                  name='searchCityState'
+                  searchText={this.state.searchInputValue}
+                  floatingLabelText='Location' 
+                  dataSource={this.state.cityStateDataSource} 
+                  onUpdateInput={this.onUpdateInput} 
+                  errors={this.state.errorsCityState} />
+              </div>
+              <div className="col-md-5">
+                <MenuItemDays daysValue={this.state.daysValue} handleDaysOnChange={this.handleDaysOnChange}/>
               </div>
               <div className="col-md-2">
+                <FullTripSearchButton onFullTripSubmit={this.onFullTripSubmit}/>
+              </div>
+              <br/>
+              <div className="col-md-12 ">
                 {this.state.fullTripDetails.length>0 && 
-                  <FullTripAddEventButton onAddEventSubmit={this.onAddEventSubmit}/>}
+                  <FullTripList 
+                    onDeleteEvent={this.onDeleteEvent} 
+                    onSuggestEvent={this.onSuggestEvent}
+                    updateSuggestEvent={this.state.updateSuggestEvent}
+                    fullTripDetails={this.state.fullTripDetails} 
+                    tripLocationIds={this.state.tripLocationIds}
+                    getTapName={this.getTapName} 
+                    />}
               </div>
-              <div className="col-md-4">
-                <div className="col-md-4">
-                  {Object.keys(this.state.updateSuggestEvent).length>0 && 
-                    <FullTripResetButton onFullTripReset={this.onFullTripReset}/>}
+              <div className="col-md-10 col-md-offset-2">
+                <div className="col-md-5 col-md-offset-1">
+                  {this.state.fullTripDetails.length>0 && 
+                    <SearchInputField
+                      name='searchAddEvent'
+                      searchText={this.state.searchEventValue}
+                      hintText='Add New Event'
+                      inputStyle={{ textAlign: 'center' }}
+                      dataSource={this.state.addEventDataSource} 
+                      onUpdateInput={this.onAddEventInput} />}
+                </div>
+                <div className="col-md-2">
+                  {this.state.fullTripDetails.length>0 && 
+                    <FullTripAddEventButton onAddEventSubmit={this.onAddEventSubmit}/>}
                 </div>
                 <div className="col-md-4">
-                  {Object.keys(this.state.updateSuggestEvent).length>0 && 
-                    <FullTripConfirmButton onFullTripConfirm={this.onFullTripConfirm}/>}
+                  <div className="col-md-4">
+                    {Object.keys(this.state.updateSuggestEvent).length>0 && 
+                      <FullTripResetButton onFullTripReset={this.onFullTripReset}/>}
+                  </div>
+                  <div className="col-md-4">
+                    {Object.keys(this.state.updateSuggestEvent).length>0 && 
+                      <FullTripConfirmButton onFullTripConfirm={this.onFullTripConfirm}/>}
+                  </div>
                 </div>
+                
               </div>
-              
+              <div className="col-md-12">
+                <div style={divStyle}>
+                    {this.state.fullTripDetails.length > 0 && <DirectionsTrip fullTripDetails={this.state.fullTripDetails}
+                                                                              updateTripLocationId={this.state.updateTripLocationId}
+                                                                              tripLocationIds={this.state.tripLocationIds} 
+                                                                              getMapUrl={this.getMapUrl} />}
+                </div>
+
+                <br />
+                <div className="col-md-6">
+                  {this.state.currentMapUrl.length >0 && <GoogleMapUrlButton googleMapUrl={this.state.currentMapUrl} />}
+                </div>
+                <div className="col-md-6">
+                  {this.state.currentMapUrl.length >0 && <FullTripUserSubmitButton onFullTripUserSubmit={this.onFullTripUserSubmit} />}
+                </div>
+
+              </div>            
             </div>
-            <div className="col-md-12">
-              <div style={divStyle}>
-                  {this.state.fullTripDetails.length > 0 && <DirectionsTrip fullTripDetails={this.state.fullTripDetails}
-                                                                            updateTripLocationId={this.state.updateTripLocationId}
-                                                                            tripLocationIds={this.state.tripLocationIds} 
-                                                                            getMapUrl={this.getMapUrl} />}
-              </div>
-
-              <br />
-              <div className="col-md-6">
-                {this.state.currentMapUrl.length >0 && <GoogleMapUrlButton googleMapUrl={this.state.currentMapUrl} />}
-              </div>
-              <div className="col-md-6">
-                {this.state.currentMapUrl.length >0 && <FullTripUserSubmitButton onFullTripUserSubmit={this.onFullTripUserSubmit} />}
-              </div>
-
-            </div>            
-          </div>
-            
-        </CardActions>
-      </Card>
+              
+          </CardActions>
+        </Card>
+      </div>
     )
   }
 };
