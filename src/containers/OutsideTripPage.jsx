@@ -7,7 +7,7 @@ import FullTripList from '../components/FullTripList.jsx';
 import FullTripAddEventButton from '../components/FullTripAddEventButton.jsx';
 import FullTripResetButton from '../components/FullTripResetButton.jsx';
 import FullTripConfirmButton from '../components/FullTripConfirmButton.jsx';
-import DirectionsTrip from '../components/GoogleMapComponent.jsx';
+import GoogleMapOutsideTrip from '../components/GoogleMapOutsideTripComponent.jsx';
 import GoogleMapUrlButton from '../components/GoogleMapUrlButton.jsx';
 import FullTripUserSubmitButton from '../components/FullTripUserSubmitButton.jsx';
 import UserStore from '../stores/UserStore.jsx';
@@ -508,30 +508,22 @@ class OutsideTripPage extends React.Component {
                 </div>
               </div>
 
-              
-            </div>
-
-          </CardActions>
-        </div>
-
-        <div className="col-md-12">
-          <CardActions>
-            <div className="col-md-8 col-md-offset-2">
-              <div className="col-md-10 col-md-offset-2">
+              <div style={divStyle}>
+                {this.state.updateOutsideRouteIdx !== '' && 
+                  <GoogleMapOutsideTrip
+                    outsideTripDetails={this.state.outsideTripDetails[this.state.updateOutsideRouteIdx]}
+                    origin_location = {this.state.searchInputValue}
+                    getMapUrl={this.getMapUrl} /> }
               </div>
-              <div className="col-md-12">
-                
-                <br />
-                <div className="col-md-6">
+
+              <div className="col-md-6">
                   {this.state.currentMapUrl.length >0 && <GoogleMapUrlButton googleMapUrl={this.state.currentMapUrl} />}
                 </div>
                 <div className="col-md-6">
                   {this.state.currentMapUrl.length >0 && <FullTripUserSubmitButton onFullTripUserSubmit={this.onFullTripUserSubmit} />}
                 </div>
-
-              </div>            
             </div>
-              
+
           </CardActions>
         </div>
       </Card>

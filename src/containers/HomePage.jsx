@@ -111,7 +111,7 @@ class HomePage extends React.Component {
     const city = this.state.searchInputValue.split(',')[0];
     const state = this.state.searchInputValue.split(',')[1];
     const fullTripSearchUrl = TripConstants.SEARCH_FULL_TRIP_URL + 'city=' + encodeURIComponent(city) + '&state='+ encodeURIComponent(state) + '&n_days='+ _this.state.daysValue;
-
+    console.log('fulltrip url: ', fullTripSearchUrl)
     if(_this.state.searchInputValue !== '') {
       $.ajax({
         type: "GET",

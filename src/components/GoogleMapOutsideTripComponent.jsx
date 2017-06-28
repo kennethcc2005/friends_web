@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { withGoogleMap, GoogleMap, DirectionsRenderer } from "react-google-maps";
 
-export default class FullTripDirectionsTrip extends Component {
+export default class GoogleMapOutsideTrip extends Component {
 
   constructor(props) {
     super(props);
@@ -15,12 +15,12 @@ export default class FullTripDirectionsTrip extends Component {
   }
 
   componentWillMount() {
-    this.setState({directionDetails: this.getWaypts(this.props.fullTripDetails, this.props.tripLocationIds, this.props.updateTripLocationId)});
+    this.setState({directionDetails: this.getWaypts(this.props.outsideTripDetails)});
   }
 
   componentWillReceiveProps(nextProps) {
-    if ((nextProps.fullTripDetails !== this.props.fullTripDetails) || ((nextProps.updateTripLocationId !== this.props.updateTripLocationId))) {
-      this.setState({directionDetails: this.getWaypts(nextProps.fullTripDetails, nextProps.tripLocationIds, nextProps.updateTripLocationId)});
+    if (nextProps.outsideTripDetails !== this.props.outsideTripDetails) {
+      this.setState({directionDetails: this.getWaypts(nextProps.outsideTripDetails)});
     }
   }
 
@@ -29,65 +29,44 @@ export default class FullTripDirectionsTrip extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if ((prevProps.fullTripDetails !== this.props.fullTripDetails) || ((prevProps.updateTripLocationId !== this.props.updateTripLocationId))) {
+    if (prevProps.outsideTripDetails !== this.props.outsideTripDetails) {
       console.log('map updated!')
       this.getDirections();
     }
   }
 
   shouldComponentUpdate(nextProps,nextState) {
-      const differentFullTripDetails = nextProps.fullTripDetails !== this.props.fullTripDetails;
-      const differentTripLocationId = nextProps.updateTripLocationId !== this.props.updateTripLocationId;
-      const differentDirectionDetails = nextState.directions !== this.state.directions;
-      return differentFullTripDetails || differentTripLocationId || differentDirectionDetails;
-    }
+      return nextProps.outsideTripDetails !== this.props.outsideTripDetails;
+  }
 
-  getWaypts = function(fullTripDetails, tripLocationIds, updateTripLocationId) {
+  getWaypts = function(outsideTripDetails) {
     let waypts = [];
-    const currentDay = tripLocationIds.findIndex(x => x === updateTripLocationId);
-    const oriIndex = fullTripDetails.findIndex(x => x.day === currentDay);
-    const dayAry = fullTripDetails.map(function(a) {return a.day;});
-    const destIndex = dayAry.lastIndexOf(currentDay);
-    let origin = '';
+    const tripLength = outsideTripDetails.length;
+    const origin = this.props.origin_location;
+    const originUrl = '&origin=' + encodeURIComponent(origin);
     let location = '';
     let destination = '';
     let mapWayptUrl = 'https://www.google.com/maps/dir/?api=1&travelmode=driving';
     let mapWaypts = [];
-    let originUrl = '';
     let destUrl = '';
-    for (let i = oriIndex; i <= destIndex; i++){
-      let addressArr = fullTripDetails[i].address.split(', ');
-      let newArr = [];
-      for (let j = 0; j<addressArr.length-1; j++) {
-        if(isNaN(addressArr[j])) {
-          newArr.push(addressArr[j]);
-        }
-      }
-      let newAddress = newArr.join(', ');
-      let cityState = fullTripDetails[i].city + ', '+fullTripDetails[i].state;
-      if(newAddress === cityState){
-        location = fullTripDetails[i].name + ', ' + cityState;
-        // console.log('no coord: ', location)
+    for (let i = 0; i < tripLength; i++){
+      if (outsideTripDetails.check_full_address === 0){
+        location = outsideTripDetails[i].name + ', ' + outsideTripDetails[i].city + ', ' + outsideTripDetails[i].state
       }
       else {
-        location = new window.google.maps.LatLng(fullTripDetails[i].coord_lat, fullTripDetails[i].coord_long);
+        location = outsideTripDetails[i].address
       }
-      if(i === oriIndex) {
-        origin = location;
-        originUrl = '&origin='+fullTripDetails[i].coord_lat+','+fullTripDetails[i].coord_long ; 
-        // console.log(fullTripDetails[i], 'ori')
-      }
-      else if(i === destIndex) {
+      // location = new window.google.maps.LatLng(outsideTripDetails[i].coord_lat, outsideTripDetails[i].coord_long)
+      if(i === tripLength - 1) {
         destination = location;
-        destUrl = '&destination='+ fullTripDetails[i].coord_lat+','+fullTripDetails[i].coord_long; 
-        // console.log(fullTripDetails[i],'dest')
+        destUrl = '&destination='+ destination; 
       }
       else {
+        // console.log(location)
         waypts.push({location: location, stopover: true});
-        mapWaypts.push(fullTripDetails[i].coord_lat+','+fullTripDetails[i].coord_long);
+        mapWaypts.push(encodeURIComponent(location));
       }
     }
-
     const mapWayptsStr = mapWaypts.join('%7C');
     mapWayptUrl += originUrl + destUrl + '&waypoints=' + mapWayptsStr;
     this.props.getMapUrl(mapWayptUrl);
@@ -131,7 +110,6 @@ export default class FullTripDirectionsTrip extends Component {
         {this.state.directions && <DirectionsRenderer directions={this.state.directions} />}
       </GoogleMap>
     ));
-    // this.getDirections();
 
     return (
       <DirectionsGoogleMap
