@@ -515,13 +515,14 @@ class OutsideTripPage extends React.Component {
                     origin_location = {this.state.searchInputValue}
                     getMapUrl={this.getMapUrl} /> }
               </div>
-
-              <div className="col-md-6">
+              <div className="col-md-12">
+                <div className="col-md-6">
                   {this.state.currentMapUrl.length >0 && <GoogleMapUrlButton googleMapUrl={this.state.currentMapUrl} />}
                 </div>
                 <div className="col-md-6">
                   {this.state.currentMapUrl.length >0 && <FullTripUserSubmitButton onFullTripUserSubmit={this.onFullTripUserSubmit} />}
                 </div>
+              </div>
             </div>
 
           </CardActions>

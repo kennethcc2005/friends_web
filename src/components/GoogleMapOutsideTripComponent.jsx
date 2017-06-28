@@ -7,6 +7,7 @@ export default class GoogleMapOutsideTrip extends Component {
     super(props);
     this.state = {
       directions: null,
+      center: null,
       directionDetails: {},
       mapUrl: '',
     };
@@ -59,7 +60,7 @@ export default class GoogleMapOutsideTrip extends Component {
       // location = new window.google.maps.LatLng(outsideTripDetails[i].coord_lat, outsideTripDetails[i].coord_long)
       if(i === tripLength - 1) {
         destination = location;
-        destUrl = '&destination='+ destination; 
+        destUrl = '&destination='+ encodeURIComponent(destination); 
       }
       else {
         // console.log(location)
@@ -70,7 +71,9 @@ export default class GoogleMapOutsideTrip extends Component {
     const mapWayptsStr = mapWaypts.join('%7C');
     mapWayptUrl += originUrl + destUrl + '&waypoints=' + mapWayptsStr;
     this.props.getMapUrl(mapWayptUrl);
+    const center = new window.google.maps.LatLng(outsideTripDetails[0].coord_lat, outsideTripDetails[0].coord_long)
     return {
+      center: center,
       origin: origin,
       destination: destination,
       waypts: waypts
@@ -79,6 +82,7 @@ export default class GoogleMapOutsideTrip extends Component {
 
   getDirections() {
     // console.log('get directions')
+    const _this = this;
     const DirectionsService = new window.google.maps.DirectionsService();
     if(this.state.directionDetails.origin){ 
       DirectionsService.route({
@@ -89,7 +93,7 @@ export default class GoogleMapOutsideTrip extends Component {
         optimizeWaypoints: false,
       }, (result, status) => {
         if (status === window.google.maps.DirectionsStatus.OK) {
-          this.setState({
+          _this.setState({
             directions: result,
           });
           console.log('reuslt: ', result)
@@ -105,8 +109,9 @@ export default class GoogleMapOutsideTrip extends Component {
     const DirectionsGoogleMap = withGoogleMap(props => (
       <GoogleMap
         defaultZoom={7}
-        defaultCenter={this.state.center}
+        defaultCenter={this.state.directionDetails.center}
       >
+        {console.log('direciotns: ', this.state.directionDetails.center, this.state.directions)}
         {this.state.directions && <DirectionsRenderer directions={this.state.directions} />}
       </GoogleMap>
     ));
@@ -119,8 +124,6 @@ export default class GoogleMapOutsideTrip extends Component {
         mapElement={
           <div style={{ height: `100%` }} />
         }
-        center={this.state.directionDetails.origin}
-        directions={this.state.directions}
       />
     );
   }
