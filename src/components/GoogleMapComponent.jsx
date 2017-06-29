@@ -65,28 +65,23 @@ export default class FullTripDirectionsTrip extends Component {
       else {
         location = fullTripDetails[i].address
       }
-
       if(i === oriIndex) {
         center_coords = new window.google.maps.LatLng(fullTripDetails[i].coord_lat, fullTripDetails[i].coord_long);
         origin = location;
-        originUrl = '&origin='+fullTripDetails[i].coord_lat+','+fullTripDetails[i].coord_long ; 
-        // console.log(fullTripDetails[i], 'ori')
+        originUrl = '&origin='+encodeURIComponent(origin) ; 
       }
       else if(i === destIndex) {
         destination = location;
-        destUrl = '&destination='+ fullTripDetails[i].coord_lat+','+fullTripDetails[i].coord_long; 
-        // console.log(fullTripDetails[i],'dest')
+        destUrl = '&destination='+ encodeURIComponent(destination); 
       }
       else {
         waypts.push({location: location, stopover: true});
         mapWaypts.push(fullTripDetails[i].coord_lat+','+fullTripDetails[i].coord_long);
       }
     }
-
     const mapWayptsStr = mapWaypts.join('%7C');
     mapWayptUrl += originUrl + destUrl + '&waypoints=' + mapWayptsStr;
     this.props.getMapUrl(mapWayptUrl);
-    console.log('origin', origin)
     return {
       origin: origin,
       destination: destination,
@@ -96,7 +91,6 @@ export default class FullTripDirectionsTrip extends Component {
   }
 
   getDirections() {
-    // console.log('get directions')
     const DirectionsService = new window.google.maps.DirectionsService();
     if(this.state.directionDetails.origin && this.state.directionDetails.waypts.length !== 0){ 
       DirectionsService.route({
