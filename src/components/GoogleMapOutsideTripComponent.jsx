@@ -51,7 +51,7 @@ export default class GoogleMapOutsideTrip extends Component {
     let mapWaypts = [];
     let destUrl = '';
     for (let i = 0; i < tripLength; i++){
-      if (outsideTripDetails.check_full_address === 0){
+      if (outsideTripDetails[i].check_full_address === 0){
         location = outsideTripDetails[i].name + ', ' + outsideTripDetails[i].city + ', ' + outsideTripDetails[i].state
       }
       else {
