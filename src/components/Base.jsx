@@ -67,6 +67,14 @@ class Base extends Component {
             }}
           />
 
+          <MenuItem
+            primaryText="Share Trip"
+            containerElement={<Link to="/blog" />}
+            onTouchTap={() => {
+              this.toggleDrawer()
+            }}
+          />
+
         </Drawer>
         <div style={{ textAlign: 'center' }}>
           {this.props.children}

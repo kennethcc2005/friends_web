@@ -31,14 +31,17 @@ export default class GoogleMapOutsideTrip extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.outsideTripDetails !== this.props.outsideTripDetails) {
-      console.log('map updated!')
       this.getDirections();
     }
   }
 
-  shouldComponentUpdate(nextProps,nextState) {
-      return nextProps.outsideTripDetails !== this.props.outsideTripDetails;
-  }
+  // shouldComponentUpdate(nextProps,nextState) {
+  //   const differentDirectionDetails = nextState.directionDetails !== this.state.directionDetails;
+  //   const differentOutsideTripDetails = nextProps.outsideTripDetails !== this.props.outsideTripDetails;
+  //   console.log('different: ', differentDirectionDetails || differentOutsideTripDetails, this.state.directionDetails, nextState.directionDetails );
+  //   return differentDirectionDetails || differentOutsideTripDetails;
+  //   return true
+  // }
 
   getWaypts = function(outsideTripDetails) {
     let waypts = [];
@@ -106,12 +109,12 @@ export default class GoogleMapOutsideTrip extends Component {
 
   render() {
     console.log('map re-renderred')
+    const _this = this;
     const DirectionsGoogleMap = withGoogleMap(props => (
       <GoogleMap
         defaultZoom={7}
-        defaultCenter={this.state.directionDetails.center}
+        defaultCenter={_this.state.directionDetails.center}
       >
-        {console.log('direciotns: ', this.state.directionDetails.center, this.state.directions)}
         {this.state.directions && <DirectionsRenderer directions={this.state.directions} />}
       </GoogleMap>
     ));

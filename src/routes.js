@@ -5,6 +5,7 @@ import UserDetailPage from './containers/UserDetailPage';
 import OutsideTripPage from './containers/OutsideTripPage';
 import CreateTripPage from './containers/CreateTripPage';
 import LoginPage from './containers/LoginPage';
+import BlogPage from './containers/BlogPage';
 import SignUpPage from './containers/SignUpPage';
 import Auth from './modules/Auth';
 
@@ -44,6 +45,11 @@ const routes = {
     {
       path: '/user',
       component: UserDetailPage
+    },
+
+    {
+      path: '/blog',
+      component: BlogPage
     },
 
     {

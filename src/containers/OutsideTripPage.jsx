@@ -507,7 +507,8 @@ class OutsideTripPage extends React.Component {
                     <FullTripConfirmButton onFullTripConfirm={this.onFullTripConfirm}/>}
                 </div>
               </div>
-
+            </div>
+            <div className="col-md-8 col-md-offset-2">
               <div style={divStyle}>
                 {this.state.updateOutsideRouteIdx !== '' && 
                   <GoogleMapOutsideTrip
@@ -515,7 +516,7 @@ class OutsideTripPage extends React.Component {
                     origin_location = {this.state.searchInputValue}
                     getMapUrl={this.getMapUrl} /> }
               </div>
-              <div className="col-md-12">
+              <div className="col-md-12" style={{marginTop:'20px'}}>
                 <div className="col-md-6">
                   {this.state.currentMapUrl.length >0 && <GoogleMapUrlButton googleMapUrl={this.state.currentMapUrl} />}
                 </div>
@@ -524,7 +525,6 @@ class OutsideTripPage extends React.Component {
                 </div>
               </div>
             </div>
-
           </CardActions>
         </div>
       </Card>
