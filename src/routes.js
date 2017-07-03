@@ -8,6 +8,7 @@ import LoginPage from './containers/LoginPage';
 import BlogPage from './containers/BlogPage';
 import SignUpPage from './containers/SignUpPage';
 import Auth from './modules/Auth';
+import PostDetailPage from './containers/BlogPage';
 
 
 const routes = {
@@ -50,6 +51,11 @@ const routes = {
     {
       path: '/posts',
       component: BlogPage
+    },
+
+    {
+      path: "/posts/i/:slug",
+      component: PostDetailPage
     },
 
     {

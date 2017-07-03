@@ -30,7 +30,7 @@ SearchInputField.propTypes = {
   onUpdateInput: PropTypes.func.isRequired,
   hintText: PropTypes.string,
   inputStyle: PropTypes.object,
-  errors: PropTypes.object.isRequired,
+  errors: PropTypes.object,
 
 };
 

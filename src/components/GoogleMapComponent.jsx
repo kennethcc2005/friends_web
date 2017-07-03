@@ -60,7 +60,8 @@ export default class FullTripDirectionsTrip extends Component {
     let center_coords = '';
     for (let i = oriIndex; i <= destIndex; i++){
       if (fullTripDetails[i].check_full_address === 0){
-        location = fullTripDetails[i].name + ', ' + fullTripDetails[i].city + ', ' + fullTripDetails[i].state
+        location = fullTripDetails[i].name + ',' + fullTripDetails[i].city + ',' + fullTripDetails[i].state;
+        // location = new window.google.maps.LatLng(fullTripDetails[i].coord_lat, fullTripDetails[i].coord_long);
       }
       else {
         location = fullTripDetails[i].address
@@ -107,7 +108,7 @@ export default class FullTripDirectionsTrip extends Component {
           });
           console.log('reuslt: ', result)
         } else {
-          console.error(`error fetching directions ${result}`);
+          console.error('error fetching directions: ', result);
         }
       });
     } else {
@@ -123,13 +124,11 @@ export default class FullTripDirectionsTrip extends Component {
   }
 
   render() {
-    console.log('map re-renderred')
     const DirectionsGoogleMap = withGoogleMap(props => (
       <GoogleMap
         defaultZoom={11}
         defaultCenter={this.state.directionDetails.center_coords}
       > 
-        {console.log(this.state.directionDetails.center_coords)}
         {Object.keys(this.state.marker).length === 0  && <DirectionsRenderer directions={this.state.directions} /> }
         <Marker
           {...this.state.marker}
