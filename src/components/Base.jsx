@@ -69,7 +69,7 @@ class Base extends Component {
 
           <MenuItem
             primaryText="Share Trip"
-            containerElement={<Link to="/blog" />}
+            containerElement={<Link to="/posts" />}
             onTouchTap={() => {
               this.toggleDrawer()
             }}

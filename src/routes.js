@@ -8,7 +8,8 @@ import LoginPage from './containers/LoginPage';
 import BlogPage from './containers/BlogPage';
 import SignUpPage from './containers/SignUpPage';
 import Auth from './modules/Auth';
-import PostDetailPage from './containers/BlogPage';
+import PostDetailPage from './containers/PostDetailPage';
+import PostNewPage from './containers/PostNewPage';
 
 
 const routes = {
@@ -56,6 +57,11 @@ const routes = {
     {
       path: "/posts/i/:slug",
       component: PostDetailPage
+    },
+
+    {
+      path: "/posts/new",
+      component: PostNewPage
     },
 
     {

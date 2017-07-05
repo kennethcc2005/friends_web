@@ -5,6 +5,8 @@ import Avatar from 'material-ui/Avatar';
 import BlogConstants from '../constants/BlogConstants.jsx';
 import axios from 'axios';
 import moment from 'moment';
+import { Link } from 'react-router';
+
 class BlogPage extends React.Component {
 
   /**
@@ -86,30 +88,25 @@ class BlogPage extends React.Component {
   }
 
   componentWillMount() {
-    console.log(">>>> src/components/post_list.js:");
-    console.log("Calling fetchPosts() action creator.");     
     /* Fetch posts when the app loads */
     this.fetchAndFilterPosts();
     // this.props.fetchSettings();
   }
 
   componentDidUpdate() {
-    console.log('Did Update: ', this.state.posts, this.state.prevPage, this.state.nextPage)
-    console.log('backgroundImage: ', this.state.baseBackgroundImg)
 
   }
 
   postBase() {
     for (let post of this.state.posts) {
       if (post.full_trip_details !== null) {
-        console.log('test1',post.full_trip_details[0].img_url)
         this.setState({
           baseBackgroundImg: post.full_trip_details[0].img_url
         });
         break;
       } else if (post.outside_trip_details !== null) {
         this.setState({
-          baseBackgroundImg: post.outside_trip_details[0].img_url
+          baseBackgroundImg: post.outside_trip_details[0][0].img_url
         });
         break;
       }
@@ -119,11 +116,16 @@ class BlogPage extends React.Component {
    * Render the component.
    */
   render() {
+    const currentPostsPage = parseInt(this.props.location.query.page ?
+             this.props.location.query.page : 1);
+    const nextPostsPage = currentPostsPage + 1;
+    const prevPostsPage = currentPostsPage - 1;
     const imgUrl = this.state.baseBackgroundImg;
     const avatarUrl = 'https://s3.amazonaws.com/travel-with-friends/profile.jpg';
     const avatarStyle = {
       backgroundImage:`url(${avatarUrl})`,
       backgroundColor: '#263238',
+      backgroundSize: 'cover',
     }
     const bgImg = {
       backgroundSize: 'cover',
@@ -134,9 +136,13 @@ class BlogPage extends React.Component {
 
     let postLists = [];
     for (let i = 0; i< this.state.posts.length; i++) {
-      const postImgUrl = this.state.posts[i].full_trip_details ? this.state.posts[i].full_trip_details[0].img_url : this.state.posts[i].outside_trip_details[0].img_url;
+      let postImgUrl = '';
+      if (this.state.posts[i].full_trip_details || this.state.posts[i].outside_trip_details ){
+        postImgUrl = this.state.posts[i].full_trip_details ? this.state.posts[i].full_trip_details[0].img_url : this.state.posts[i].outside_trip_details[0][0].img_url;
+      } 
       const postDate = this.state.posts[i] ? moment(this.state.posts[i].pub_date).calendar() : moment().subtract(30, 'days').calendar();  
       const postTitle = this.state.posts[i].title;
+      const postSlug = this.state.posts[i].slug;
       const postUsername = this.state.posts[i].username;
       const postBgImg = {
         backgroundImage: `url(${postImgUrl})`,
@@ -145,9 +151,9 @@ class BlogPage extends React.Component {
       }
       if(i===0) {
         postLists.push(
-          <div className="mdl-card mdl-cell mdl-cell--8-col">
-            <div className="mdl-card__media mdl-color-text--grey-50" style={postBgImg}>
-              <h3><a href="entry.html">{postTitle}</a></h3>
+          <div className="mdl-card mdl-cell mdl-cell--8-col" key={postSlug}>
+            <div className="mdl-card__media mdl-color-text--grey-50" style={postBgImg} >
+              <h3><a href={"/posts/i/"+postSlug}>{postTitle}</a></h3>
             </div>
             <div className="mdl-card__supporting-text meta mdl-color-text--grey-600">
               <Avatar src={avatarUrl} />
@@ -158,10 +164,12 @@ class BlogPage extends React.Component {
             </div>
           </div>)
          postLists.push(
-          <div className="mdl-card something-else mdl-cell mdl-cell--8-col mdl-cell--4-col-desktop">
+          <div className="mdl-card something-else mdl-cell mdl-cell--8-col mdl-cell--4-col-desktop" key={'personnel'}>
             <button className="mdl-button mdl-js-ripple-effect mdl-js-button mdl-button--fab mdl-color--accent">
+              <a href={"/posts/new/"}>
               <i className="material-icons mdl-color-text--white" role="presentation">add</i>
               <span className="visuallyhidden">add</span>
+              </a>
             </button>
             <div className="mdl-card__media mdl-color--white mdl-color-text--grey-600">
               <img src={avatarUrl} />
@@ -177,9 +185,9 @@ class BlogPage extends React.Component {
       } else {
           if (i%2==1) {
           postLists.push(
-            <div className="mdl-card mdl-cell mdl-cell--12-col">
+            <div className="mdl-card mdl-cell mdl-cell--12-col" key={postSlug}>
               <div className="mdl-card__media mdl-color-text--grey-50" style={postBgImg}>
-                <h3><a href="entry.html">{postTitle}</a></h3>
+                <h3><a href={"/posts/i/"+postSlug}>{postTitle}</a></h3>
               </div>
               <div className="mdl-card__supporting-text meta mdl-color-text--grey-600">
                 <Avatar src={avatarUrl} />
@@ -191,20 +199,20 @@ class BlogPage extends React.Component {
             </div>
           )
           } else {
-          postLists.push(
-            <div className="mdl-card mdl-cell mdl-cell--12-col">
-              <div className="mdl-card__media mdl-color-text--grey-50">
-                <h3><a href="entry.html">{postTitle}</a></h3>
-              </div>
-              <div className="mdl-card__supporting-text meta mdl-color-text--grey-600">
-                <Avatar src={avatarUrl} />
-                <div>
-                  <strong style={{textAlign: 'left'}}>{postUsername}</strong>
-                  <span>{postDate}</span>
+            postLists.push(
+              <div className="mdl-card mdl-cell mdl-cell--12-col" key={postSlug}>
+                <div className="mdl-card__media mdl-color-text--grey-50">
+                  <h3><a href={"/posts/i/"+postSlug}>{postTitle}</a></h3>
+                </div>
+                <div className="mdl-card__supporting-text meta mdl-color-text--grey-600">
+                  <Avatar src={avatarUrl} />
+                  <div>
+                    <strong style={{textAlign: 'left'}}>{postUsername}</strong>
+                    <span>{postDate}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          )
+            )
           }
       }   
     }
@@ -214,16 +222,28 @@ class BlogPage extends React.Component {
         <main className="mdl-layout__content">
           <div className="demo-blog__posts mdl-grid">
             {postLists}
-            <nav className="demo-nav mdl-cell mdl-cell--12-col">
-              <div className="section-spacer"></div>
-              <a href="entry.html" className="demo-nav__button" title="show more">
-                More
-                <button className="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
-                  <i className="material-icons" role="presentation">arrow_forward</i>
-                </button>
-              </a>
-            </nav>
-
+            <div className="section-spacer"></div>
+            {this.state.prevPage && 
+                <nav className="demo-nav mdl-cell mdl-cell--9-col">
+                <a href={"/posts/?page="+prevPostsPage} className="demo-nav__button" title="prev page">
+                  Previous
+                  <button className="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                    <i className="material-icons" role="presentation">arrow_backward</i>
+                  </button>
+                </a>
+                </nav> 
+            }
+            {this.state.nextPage && 
+              <nav className="demo-nav mdl-cell mdl-cell--2-col">
+                <a href={"/posts/?page="+nextPostsPage} className="demo-nav__button" title="next page">
+                  More 
+                  <button className="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                    <i className="material-icons" role="presentation">arrow_forward</i>
+                  </button>
+                </a>
+              </nav> 
+            }
+            
           </div>
         </main>
       </div>

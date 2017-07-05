@@ -15,7 +15,10 @@ var TripConstants = {
     CREATE_OUTSIDE_TRIP_URL: BASE_URL + 'create_outside_trip/',
 
     IP_LOCATION_API: '359263af1b8a0a7c1d725ec86751962cc8801f6a',
-    IP_LOCATION_URL: BASE_URL + 'iplocation/?ip='
+    IP_LOCATION_URL: BASE_URL + 'iplocation/?ip=',
+
+    FULL_TRIP_URL: BASE_URL + 'full_trip/',
+    OUTSIDE_TRIP_URL: BASE_URL + 'outside_trip/'
 };
 
 export default TripConstants;

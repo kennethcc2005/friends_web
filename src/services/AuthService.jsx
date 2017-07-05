@@ -22,6 +22,7 @@ class AuthService {
     }
 
     getUserData(token) {
+        console.log('token: ',token)
         return (when(request({
             url: UserConstants.USER_DETAIL_URL,
             method: 'GET',
@@ -29,7 +30,7 @@ class AuthService {
 
             // add Authorization header for api authentication
             headers: {
-                'Authorization': 'Token ' + UserStore.token
+                'Authorization': 'Token ' + token
             }
         })).then(function(data) {
             console.log('my data: ',data);
