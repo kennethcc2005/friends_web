@@ -49,7 +49,7 @@ export default class OutsideTripList extends React.Component {
     let keyId = '';
     let imgUrl = '';
     for(var i=0; i<this.props.outsideRouteDetails.length; i++) {
-      primaryTextName = this.props.outsideRouteDetails[i].name;
+      primaryTextName = decodeURI(this.props.outsideRouteDetails[i].name);
       secondaryTextaddress = this.props.outsideRouteDetails[i].address;
       keyId = this.props.outsideRouteDetails[i].id;
       imgUrl = this.props.outsideRouteDetails[i].icon_url;

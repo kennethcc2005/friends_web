@@ -143,8 +143,9 @@ class HomePage extends React.Component {
     //                     '&trip_location_id='+ updateTripLocationId;
     const updateFullTripDeletePoiUrl = TripConstants.UPDATE_FULL_TRIP_DELETE_POI_URL + fullTripId + '&event_id=' + updateEventId + '&trip_location_id='+ updateTripLocationId;
     const _this = this;
+    console.log('delete event id: ',updateFullTripDeletePoiUrl)
     if(updateEventId !== '') {
-      console.log(updateFullTripDeletePoiUrl);
+      console.log('delete event id: ',updateFullTripDeletePoiUrl);
       $.ajax({
         type: "GET",
         url: updateFullTripDeletePoiUrl,
@@ -160,11 +161,12 @@ class HomePage extends React.Component {
     };
   }
 
-  onDeleteEvent(updateEventId, updateTripLocationId) {
+  onDeleteEvent(updateEventId, updateEventName, updateTripLocationId) {
     this.setState({
-        updateEventId,
-        updateTripLocationId
-      },this.performDeleteEventId);
+      updateEventId,
+      updateEventName,
+      updateTripLocationId
+    },this.performDeleteEventId);
   }
 
   onSuggestEvent(updateEventId, updateEventName, updateTripLocationId) {
@@ -442,12 +444,12 @@ class HomePage extends React.Component {
               </div>
               <div className="col-md-12">
                 <div style={divStyle}>
+                    {this.state.fullTripDetails.length > 0 && console.log('trp details: ',this.state.fullTripDetails,this.state.updateTripLocationId)}
                     {this.state.fullTripDetails.length > 0 && <DirectionsTrip fullTripDetails={this.state.fullTripDetails}
                                                                               updateTripLocationId={this.state.updateTripLocationId}
                                                                               tripLocationIds={this.state.tripLocationIds} 
                                                                               getMapUrl={this.getMapUrl} />}
                 </div>
-
                 <br />
                 <div className="col-md-6">
                   {this.state.currentMapUrl.length >0 && <GoogleMapUrlButton googleMapUrl={this.state.currentMapUrl} />}

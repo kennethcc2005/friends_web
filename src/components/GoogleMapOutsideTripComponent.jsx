@@ -56,16 +56,14 @@ export default class GoogleMapOutsideTrip extends Component {
     for (let i = 0; i < tripLength; i++){
       if (outsideTripDetails[i].check_full_address === 0){
         location = outsideTripDetails[i].name + ', ' + outsideTripDetails[i].city + ', ' + outsideTripDetails[i].state
-      }
-      else {
+      } else {
         location = outsideTripDetails[i].address
       }
       // location = new window.google.maps.LatLng(outsideTripDetails[i].coord_lat, outsideTripDetails[i].coord_long)
       if(i === tripLength - 1) {
         destination = location;
         destUrl = '&destination='+ encodeURIComponent(destination); 
-      }
-      else {
+      } else {
         // console.log(location)
         waypts.push({location: location, stopover: true});
         mapWaypts.push(encodeURIComponent(location));
@@ -101,7 +99,7 @@ export default class GoogleMapOutsideTrip extends Component {
           });
           console.log('reuslt: ', result)
         } else {
-          console.error(`error fetching directions ${result}`);
+          console.error('error fetching directions', result);
         }
       });
     }

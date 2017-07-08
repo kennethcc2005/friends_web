@@ -388,20 +388,19 @@ class OutsideTripPage extends React.Component {
             url: ipLocationURL,
             headers: {
               'Accept': 'application/json'
-            },
+          },
             type: "GET", /* or type:"GET" or type:"PUT" */
             dataType: "json",
-            data: {
-            },
-            success: function (result) {
-              localStorage.setItem('ip',data.ip);
-              localStorage.setItem('ip_state',result.region_name);
-              localStorage.setItem('ip_city',result.city_name);
-            },
-            error: function () {
-              console.log("error", ipLocationURL);
-            }
-          });
+            data: {},
+          success: function (result) {
+            localStorage.setItem('ip',data.ip);
+            localStorage.setItem('ip_state',result.region_name);
+            localStorage.setItem('ip_city',result.city_name);
+          },
+          error: function () {
+            console.log("error", ipLocationURL);
+          }
+        });
       }
     })
   }
@@ -470,6 +469,7 @@ class OutsideTripPage extends React.Component {
               </div>
 
               <div className="col-md-12" ref={(el) => {this.messagesEnd = el;}}>
+                {this.state.updateOutsideRouteIdx !== '' && console.log('outsdie details', this.state.outsideTripDetails)}
                 {this.state.updateOutsideRouteIdx !== '' && 
                   <OutsideTripList 
                     onDeleteEvent={this.onDeleteEvent} 

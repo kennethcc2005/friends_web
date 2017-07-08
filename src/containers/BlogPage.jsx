@@ -62,8 +62,10 @@ class BlogPage extends React.Component {
       }
     }
     const url = postsUrl + pageUrl;
+    console.log('post url: ', url)
     axios.get(url)
      .then(response => {
+
       _this.setState({
         posts: response.data.results,
         nextPage: response.data.next,

@@ -1,6 +1,10 @@
 import React, { PropTypes } from 'react';
 import PostNewForm from '../components/LoginForm.jsx';
 import Auth from '../services/AuthService';
+// import SimpleMDE from 'react-simplemde-editor';
+import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+import { IndexLinkContainer, LinkContainer } from 'react-router-bootstrap';
+import PostMDE from '../components/PostMDE';
 
 class PostNewPage extends React.Component {
 
@@ -22,15 +26,26 @@ class PostNewPage extends React.Component {
     this.state = {
       errors: {},
       successMessage,
+      textValue: "",
       user: {
         email: '',
         password: ''
       }
     };
-
+    this.onTextChange = this.onTextChange.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
     this.processForm = this.processForm.bind(this);
   }
 
+  onTextChange(value) {
+      this.setState({
+        textValue: value
+      });
+    };
+
+  onSubmit() {
+    const body = this.state.textValue;
+  }
   /**
    * Process the form.
    *
@@ -59,14 +74,9 @@ class PostNewPage extends React.Component {
    * Render the component.
    */
   render() {
+    // const { fields: {title, body, tags}, handleSubmit } = this.props;
     return (
-      <PostNewForm
-        onSubmit={this.processForm}
-        onChange={this.changeUser}
-        errors={this.state.errors}
-        successMessage={this.state.successMessage}
-        user={this.state.user}
-      />
+        <PostMDE />
     );
   }
 
