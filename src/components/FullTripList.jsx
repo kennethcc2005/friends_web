@@ -70,13 +70,13 @@ export default class FullTripList extends React.Component {
                 let avatarUrl = '';
                 if (this.props.updateSuggestEvent.hasOwnProperty(id)) {
                   keyId = this.props.updateSuggestEvent[id].id;
-                  primaryTextName = this.props.updateSuggestEvent[id].name;
+                  primaryTextName = decodeURI(this.props.updateSuggestEvent[id].name);
                   secondaryTextaddress = this.props.updateSuggestEvent[id].address;
                   // needs to update new img url:
                   avatarUrl = this.props.updateSuggestEvent[id].icon_url
                 } else {
                   keyId = this.props.fullTripDetails[j].id;
-                  primaryTextName = this.props.fullTripDetails[j].name;
+                  primaryTextName = decodeURI(this.props.fullTripDetails[j].name);
                   secondaryTextaddress = this.props.fullTripDetails[j].address;
                   avatarUrl = this.props.fullTripDetails[j].icon_url
                 }

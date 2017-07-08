@@ -17,7 +17,7 @@ export default class OutisdeTripGrid extends React.Component {
     const tileDetails = this.props.handleOutsideTripDetails;
     for (var i=0; i<numTiles; i++) {
       let routeIdx = i
-      let name = this.props.handleOutsideTripDetails[i][0].name
+      let name = decodeURI(this.props.handleOutsideTripDetails[i][0].name)
       let routeTitle = "Explore Around "+name
       tilesData.push(
         <GridTile
