@@ -20,8 +20,7 @@ export default class FullTripDirectionsTrip extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('will receive: ',nextProps.fullTripDetails, this.props.fullTripDetails, nextProps.updateTripLocationId, this.props.updateTripLocationId)
-    if ((nextProps.fullTripDetails !== this.props.fullTripDetails)) {
+    if ((nextProps.fullTripDetails !== this.props.fullTripDetails) || ((nextProps.updateTripLocationId !== this.props.updateTripLocationId))) {
       this.setState({directionDetails: this.getWaypts(nextProps.fullTripDetails, nextProps.tripLocationIds, nextProps.updateTripLocationId)});
     }
   }
@@ -67,6 +66,7 @@ export default class FullTripDirectionsTrip extends Component {
       for (let i = oriIndex; i <= destIndex; i++){
         if (fullTripDetails[i].check_full_address === 0){
           location = fullTripDetails[i].name + ',' + fullTripDetails[i].city + ',' + fullTripDetails[i].state;
+          console.log('not full address: ', location)
           // location = new window.google.maps.LatLng(fullTripDetails[i].coord_lat, fullTripDetails[i].coord_long);
         }
         else {

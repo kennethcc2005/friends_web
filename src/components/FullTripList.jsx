@@ -51,7 +51,7 @@ export default class FullTripList extends React.Component {
     var fullWrap = [];
     var selectList = [];
     var maxDays = Math.max.apply(Math, this.props.fullTripDetails.map(function(trip){ return trip.day; }));
-    console.log('full trip', maxDays, this.props.fullTripDetails)
+    // console.log('full trip', maxDays, this.props.fullTripDetails)
     for (var i=0; i<maxDays+1; i++) {
         tabLis.push(
             <Tab 

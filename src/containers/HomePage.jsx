@@ -266,7 +266,7 @@ class HomePage extends React.Component {
     const validInput = encodeURIComponent(this.state.searchEventValue);
     const addPoiSearchUrl = TripConstants.UPDATE_FULL_TRIP_ADD_POI_SEARCH_URL + validInput + '&trip_location_id=' + _this.state.updateTripLocationId + '&full_trip_id=' + _this.state.fullTripId;
     if(_this.state.searchEventValue !== '') {
-      console.log('add url: ', addPoiSearchUrl);
+      console.log('add search url: ', addPoiSearchUrl);
       $.ajax({
         type: "GET",
         url: addPoiSearchUrl,
@@ -309,7 +309,7 @@ class HomePage extends React.Component {
     const poiId = this.state.poiDict[this.state.searchEventValue];
     const validPoiName = encodeURIComponent(this.state.searchEventValue);
     const addPoiUrl = TripConstants.UPDATE_FULL_TRIP_ADD_POI_URL + 'poi_id=' + poiId + '&poi_name='+ validPoiName +'&full_trip_id='+ this.state.fullTripId + '&trip_location_id='+this.state.updateTripLocationId;
-    console.log(addPoiUrl)
+    console.log('add submit',addPoiUrl)
     if(this.state.searchEventValue !== '') {
       $.ajax({
         type: "GET",
@@ -444,7 +444,6 @@ class HomePage extends React.Component {
               </div>
               <div className="col-md-12">
                 <div style={divStyle}>
-                    {this.state.fullTripDetails.length > 0 && console.log('trp details: ',this.state.fullTripDetails,this.state.updateTripLocationId)}
                     {this.state.fullTripDetails.length > 0 && <DirectionsTrip fullTripDetails={this.state.fullTripDetails}
                                                                               updateTripLocationId={this.state.updateTripLocationId}
                                                                               tripLocationIds={this.state.tripLocationIds} 
