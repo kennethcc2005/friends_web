@@ -107,7 +107,7 @@ export default class FullTripDirectionsTrip extends Component {
         destination: this.state.directionDetails.destination,
         travelMode: window.google.maps.TravelMode.DRIVING,
         waypoints: this.state.directionDetails.waypts,
-        optimizeWaypoints: false,
+        optimizeWaypoints: true,
       }, (result, status) => {
         if (status === window.google.maps.DirectionsStatus.OK) {
           this.setState({
