@@ -1,5 +1,6 @@
 // var BASE_URL = 'http://localhost:8000/';
-var BASE_URL = 'http://174.129.85.123/';
+// var BASE_URL = 'http://174.129.85.123/';
+var BASE_URL = 'http://52.87.164.190/';
 var TripConstants = {
     BASE_URL: BASE_URL,
     SEARCH_CITY_STATE_URL: BASE_URL + 'city_state_search/?city_state=',
