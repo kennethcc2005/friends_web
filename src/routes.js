@@ -10,7 +10,7 @@ import SignUpPage from './containers/SignUpPage';
 import Auth from './modules/Auth';
 import PostDetailPage from './containers/PostDetailPage';
 import PostNewPage from './containers/PostNewPage';
-
+import AdminPage from './containers/AdminPage';
 
 const routes = {
   // base component (wrapper for the whole application).
@@ -82,6 +82,11 @@ const routes = {
         // change the current URL to /
         replace('/');
       }
+    },
+
+    {
+      path: '/admin',
+      component: AdminPage
     }
 
   ]
