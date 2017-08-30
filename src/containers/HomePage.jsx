@@ -323,7 +323,7 @@ class HomePage extends React.Component {
           addEventDataSource: [],
           searchEventValue: '',
         });
-        // call a func: map fulltrip detail to clone => cloneFullTripDetails = 
+        console.log('after add done: ', _this.state.fullTripDetails, res.full_trip_details)
       });
     };
   }

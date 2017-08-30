@@ -45,9 +45,9 @@ module.exports = React.createClass({
 
   render() {
     //因为你两个library噶classname messup 左
-
+    
     return (
-      <div>
+      <div className='container container-narrow'>
         <Editor
           value={this.state.textValue1}
           handleEditorChange={this.handleChange1}
