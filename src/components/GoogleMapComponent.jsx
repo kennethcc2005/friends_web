@@ -66,6 +66,7 @@ export default class FullTripDirectionsTrip extends Component {
       for (let i = oriIndex; i <= destIndex; i++){
         if (fullTripDetails[i].check_full_address === 0){
           location = fullTripDetails[i].name + ',' + fullTripDetails[i].city + ',' + fullTripDetails[i].state;
+          
           console.log('not full address: ', location)
           // location = new window.google.maps.LatLng(fullTripDetails[i].coord_lat, fullTripDetails[i].coord_long);
         }
@@ -83,7 +84,7 @@ export default class FullTripDirectionsTrip extends Component {
         }
         else {
           waypts.push({location: location, stopover: true});
-          mapWaypts.push(fullTripDetails[i].coord_lat+','+fullTripDetails[i].coord_long);
+          mapWaypts.push(encodeURIComponent(location));
         }
       }
       const mapWayptsStr = mapWaypts.join('%7C');
