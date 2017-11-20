@@ -19,9 +19,12 @@ class AdminPage extends React.Component {
             coord_long: null,
             photo_src: '',
             desc: '',
+            rating: '',
             season: '',
             link: '',
             additional_info: '',
+            visit_length: '',
+            review_nums: '',
             importantEventValue: 1,
             eventTypeValue: 'seasonal',
         }
@@ -64,6 +67,9 @@ class AdminPage extends React.Component {
         const additional_info = this.state.additional_info;
         const important_event = this.state.importantEventValue;
         const eventTypeValue = this.state.eventTypeValue;
+        const visit_length = this.state.visit_length;
+        const rating = this.state.rating;
+        const review_nums = this.state.review_nums;
         const eventType = {
           'seasonal': newPOISeasonalURI,
           'festival': newPOIFestivalURI,
@@ -86,7 +92,10 @@ class AdminPage extends React.Component {
           link: link, 
           additional_info: additional_info,
           important_event: important_event,
-          event_type_value: eventTypeValue
+          event_type_value: eventTypeValue,
+          visit_length: visit_length,
+          review_nums: review_nums,
+          rating: rating,
         }
         
         if(this.state.link !== '') {
@@ -110,6 +119,9 @@ class AdminPage extends React.Component {
               season: '',
               link: '',
               additional_info: '',
+              visit_length: '',
+              review_nums: '',
+              rating: '',
               importantEventValue: 1,
               eventTypeValue: 'seasonal',
             });
