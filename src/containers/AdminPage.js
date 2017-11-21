@@ -24,7 +24,9 @@ class AdminPage extends React.Component {
             link: '',
             additional_info: '',
             visit_length: '',
-            review_nums: '',
+            num_reviews: '',
+            poi_type: '',
+            fee: '',
             importantEventValue: 1,
             eventTypeValue: 'seasonal',
         }
@@ -51,7 +53,8 @@ class AdminPage extends React.Component {
     onNewEventSubmit = () => {
         const newPOISeasonalURI = 'http://localhost:8000/new_poi/seasonal/';
         const newPOIFestivalURI = 'http://localhost:8000/new_poi/feastival/';
-        const editPOIURI = 'http://localhost:8000/edit_poi/';
+        const editPOIURI = 'http://localhost:8000/update_poi/';
+        const newPOIURI = 'http://localhost:8000/new_poi/new/';
         const _this = this;
         const poi_id = this.state.poi_id;
         const address = this.state.address;
@@ -69,13 +72,15 @@ class AdminPage extends React.Component {
         const eventTypeValue = this.state.eventTypeValue;
         const visit_length = this.state.visit_length;
         const rating = this.state.rating;
-        const review_nums = this.state.review_nums;
+        const num_reviews = this.state.num_reviews;
+        const poi_type = this.state.poi_type;
+        const fee = this.state.fee;
         const eventType = {
           'seasonal': newPOISeasonalURI,
           'festival': newPOIFestivalURI,
           'editPOI': editPOIURI,
           'importance': editPOIURI,
-          'new': editPOIURI
+          'new': newPOIURI
         }
         const newEventSubmitUrl = eventType[eventTypeValue];
         const data = {
@@ -94,8 +99,10 @@ class AdminPage extends React.Component {
           important_event: important_event,
           event_type_value: eventTypeValue,
           visit_length: visit_length,
-          review_nums: review_nums,
+          num_reviews: num_reviews,
           rating: rating,
+          poi_type: poi_type,
+          fee: fee,
         }
         
         if(this.state.link !== '') {
@@ -120,8 +127,9 @@ class AdminPage extends React.Component {
               link: '',
               additional_info: '',
               visit_length: '',
-              review_nums: '',
+              num_reviews: '',
               rating: '',
+              fee: '',
               importantEventValue: 1,
               eventTypeValue: 'seasonal',
             });
@@ -130,93 +138,135 @@ class AdminPage extends React.Component {
       }
     render() {
         const handleOnChange = this.handleOnChange;
-        const {poi_id, poi_name, address, city, state, coord_lat, coord_long, photo_src, desc, season, link, additional_info } = this.state;
+        const { poi_id, poi_name, address, city, state, coord_lat, coord_long, poi_type, photo_src, desc, season, link, num_reviews, rating, visit_length, fee, additional_info } = this.state;
         return(
-            <div className="col-md-6">
-                <TextField
-                hintText="POI ID"
-                fullWidth={true}
-                id="poi_id"
-                value={poi_id}
-                onChange={handleOnChange}
-                /><br />
-                <TextField
-                hintText="POI Name"
-                fullWidth={true}
-                id="poi_name"
-                value={poi_name}
-                onChange={handleOnChange}
-                /><br />
-                <TextField
-                hintText="Address"
-                id="address"
-                fullWidth={true}
-                value={address}
-                onChange={handleOnChange}
-                /><br />
-                <TextField
-                hintText="City"
-                id="city"
-                fullWidth={true}
-                value={city}
-                onChange={handleOnChange}
-                /><br />
-                <TextField
-                hintText="State"
-                id="state"
-                fullWidth={true}
-                value={state}
-                onChange={handleOnChange}
-                /><br />
-                <TextField
-                hintText="Coord Lat"
-                id="coord_lat"
-                fullWidth={true}
-                value={coord_lat}
-                onChange={handleOnChange}
-                /><br />
-                <TextField
-                hintText="Coord Long"
-                id="coord_long"
-                fullWidth={true}
-                value={coord_long}
-                onChange={handleOnChange}
-                /><br />
-                <TextField
-                hintText="Photo Source"
-                id="photo_src"
-                fullWidth={true}
-                value={photo_src}
-                onChange={handleOnChange}
-                /><br />
-                <TextField
-                hintText="Description"
-                id="desc"
-                fullWidth={true}
-                value={desc}
-                onChange={handleOnChange}
-                /><br />
-                <TextField
-                hintText="Season"
-                id="season"
-                fullWidth={true}
-                value={season}
-                onChange={handleOnChange}
-                /><br />
-                <TextField
-                hintText="Link"
-                id="link"
-                fullWidth={true}
-                value={link}
-                onChange={handleOnChange}
-                /><br />
-                <TextField
-                hintText="Additional Info"
-                fullWidth={true}
-                id="additional_info"
-                value={additional_info}
-                onChange={handleOnChange}
-                /><br />
+            <div>
+              <div className="col-md-12">
+                <div className="col-md-6">
+                  <TextField
+                  hintText="POI ID"
+                  fullWidth={true}
+                  id="poi_id"
+                  value={poi_id}
+                  onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                  hintText="POI Name"
+                  fullWidth={true}
+                  id="poi_name"
+                  value={poi_name}
+                  onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                  hintText="Address"
+                  id="address"
+                  fullWidth={true}
+                  value={address}
+                  onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                  hintText="City"
+                  id="city"
+                  fullWidth={true}
+                  value={city}
+                  onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                  hintText="State"
+                  id="state"
+                  fullWidth={true}
+                  value={state}
+                  onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                  hintText="Coord Lat"
+                  id="coord_lat"
+                  fullWidth={true}
+                  value={coord_lat}
+                  onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                  hintText="Coord Long"
+                  id="coord_long"
+                  fullWidth={true}
+                  value={coord_long}
+                  onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                    hintText="POI Type"
+                    id="poi_type"
+                    fullWidth={true}
+                    value={poi_type}
+                    onChange={handleOnChange}
+                  /><br />
+                </div>
+                <div className="col-md-6">
+                  <TextField
+                    hintText="Photo Source"
+                    id="photo_src"
+                    fullWidth={true}
+                    value={photo_src}
+                    onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                    hintText="Description"
+                    id="desc"
+                    fullWidth={true}
+                    value={desc}
+                    onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                    hintText="Season"
+                    id="season"
+                    fullWidth={true}
+                    value={season}
+                    onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                    hintText="Link"
+                    id="link"
+                    fullWidth={true}
+                    value={link}
+                    onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                    hintText="Visit Length"
+                    id="visit_length"
+                    fullWidth={true}
+                    value={visit_length}
+                    onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                    hintText="Rating"
+                    id="rating"
+                    fullWidth={true}
+                    value={rating}
+                    onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                    hintText="Number of Reviews"
+                    id="num_reviews"
+                    fullWidth={true}
+                    value={num_reviews}
+                    onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                    hintText="Fee"
+                    id="fee"
+                    fullWidth={true}
+                    value={fee}
+                    onChange={handleOnChange}
+                  /><br />
+                  <TextField
+                    hintText="Additional Info"
+                    fullWidth={true}
+                    id="additional_info"
+                    value={additional_info}
+                    onChange={handleOnChange}
+                  /><br />
+                </div>
+              </div>
+              <div className="col-md-6">
                 <div className="col-md-6">
                   <DropDownMenu
                     value={this.state.importantEventValue}
@@ -244,6 +294,7 @@ class AdminPage extends React.Component {
                 </div>
                 <br />
                 <RaisedButton className="pull-right" label="Submit" primary={true} onClick={this.onNewEventSubmit} />
+              </div>
             </div>
         )
     }
